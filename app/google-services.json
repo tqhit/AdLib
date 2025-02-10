@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "81261688838",
+    "project_id": "adlib-8f82a",
+    "storage_bucket": "adlib-8f82a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81261688838:android:f56bb11a463e3b88976b87",
+        "android_client_info": {
+          "package_name": "com.tqhit.adlib"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAV8cO0KGA70TOGpJaMCfBtw_PPKPplmCc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

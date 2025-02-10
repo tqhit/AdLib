@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.tqhit.adlib" />
+                  <option name="mobileSdkAppId" value="1:81261688838:android:f56bb11a463e3b88976b87" />
+                  <option name="projectId" value="adlib-8f82a" />
+                  <option name="projectNumber" value="81261688838" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

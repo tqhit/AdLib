@@ -3,7 +3,9 @@ package com.tqhit.adlib.sdk.data.local
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PreferencesHelper @Inject constructor(
     private val sharedPreferences: SharedPreferences,
     private val gson: Gson
