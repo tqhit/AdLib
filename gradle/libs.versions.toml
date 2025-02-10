@@ -1,8 +1,10 @@
 [versions]
+adjustAndroid = "5.1.0"
 agp = "8.8.0"
 customactivityoncrash = "2.4.0"
 gson = "2.12.1"
 hiltAndroid = "2.55"
+installreferrer = "2.2"
 kotlin = "2.1.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -13,6 +15,7 @@ material = "1.12.0"
 activity = "1.10.0"
 constraintlayout = "2.2.0"
 databindingRuntime = "8.8.0"
+playServicesAdsIdentifier = "18.2.0"
 sdpAndroid = "1.1.1"
 sspAndroid = "1.1.1"
 googleGmsGoogleServices = "4.4.2"
@@ -22,11 +25,13 @@ googleFirebaseCrashlytics = "3.0.3"
 firebaseConfig = "22.1.0"
 
 [libraries]
+adjust-android = { module = "com.adjust.sdk:adjust-android", version.ref = "adjustAndroid" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+installreferrer = { module = "com.android.installreferrer:installreferrer", version.ref = "installreferrer" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -35,6 +40,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-databinding-runtime = { group = "androidx.databinding", name = "databinding-runtime", version.ref = "databindingRuntime" }
+play-services-ads-identifier = { module = "com.google.android.gms:play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
 sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
 ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }

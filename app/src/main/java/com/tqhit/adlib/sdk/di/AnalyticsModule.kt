@@ -1,5 +1,6 @@
 package com.tqhit.adlib.sdk.di
 
+import com.tqhit.adlib.sdk.adjust.AdjustAnalyticsHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseAnalyticsHelper
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import dagger.Module
@@ -14,7 +15,10 @@ object AnalyticsModule {
 
     @Provides
     @Singleton
-    fun provideTrackingManager(firebaseAnalyticsHelper: FirebaseAnalyticsHelper) : AnalyticsTracker {
-        return AnalyticsTracker(firebaseAnalyticsHelper)
+    fun provideTrackingManager(
+        firebaseAnalyticsHelper: FirebaseAnalyticsHelper,
+        adjustAnalyticsHelper: AdjustAnalyticsHelper
+    ) : AnalyticsTracker {
+        return AnalyticsTracker(firebaseAnalyticsHelper, adjustAnalyticsHelper)
     }
 }
