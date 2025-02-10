@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     implementation(libs.customactivityoncrash)
+    implementation(libs.gson)
     implementation(libs.ssp.android)
     implementation(libs.sdp.android)
 }
