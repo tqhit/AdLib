@@ -4,12 +4,13 @@ import android.app.Activity
 import android.app.Application
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.tqhit.adlib.sdk.ui.crash.AdLibCustomCrashActivity
+import com.tqhit.adlib.sdk.utils.Constant
 
 abstract class AdLibBaseApplication : Application() {
     open fun onCreateExt() {}
 
     open fun isDebugMode(): Boolean {
-        return true
+        return Constant.DEBUG_MODE
     }
 
     open fun setupCAOC() {

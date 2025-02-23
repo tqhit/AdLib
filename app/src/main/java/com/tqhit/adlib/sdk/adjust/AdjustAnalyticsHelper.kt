@@ -2,9 +2,12 @@ package com.tqhit.adlib.sdk.adjust
 
 import android.content.Context
 import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
 import com.adjust.sdk.AdjustEvent
 import com.adjust.sdk.LogLevel
+import com.google.android.gms.ads.AdValue
+import com.tqhit.adlib.sdk.utils.Constant
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,15 +17,15 @@ class AdjustAnalyticsHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    fun initAdjust(isDebugMode: Boolean, adjustAppToken: String) {
-        val environment = if (isDebugMode) {
+    fun initAdjust() {
+        val environment = if (Constant.DEBUG_MODE) {
             AdjustConfig.ENVIRONMENT_SANDBOX
         } else {
             AdjustConfig.ENVIRONMENT_PRODUCTION
         }
 
-        val config = AdjustConfig(context, adjustAppToken, environment)  // Use application context
-        config.setLogLevel(if (isDebugMode) LogLevel.VERBOSE else LogLevel.WARN)
+        val config = AdjustConfig(context, Constant.ADJUST_TOKEN, environment)  // Use application context
+        config.setLogLevel(if (Constant.DEBUG_MODE) LogLevel.VERBOSE else LogLevel.WARN)
 
         Adjust.initSdk(config)
     }
@@ -31,5 +34,11 @@ class AdjustAnalyticsHelper @Inject constructor(
         val event = AdjustEvent(eventToken)
         revenue?.let { event.setRevenue(it, currency) }
         Adjust.trackEvent(event)
+    }
+
+    fun trackRevenueEvent(adValue: AdValue) {
+        val adjustAdRevenue = AdjustAdRevenue("admob_sdk")
+        adjustAdRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
+        Adjust.trackAdRevenue(adjustAdRevenue)
     }
 }

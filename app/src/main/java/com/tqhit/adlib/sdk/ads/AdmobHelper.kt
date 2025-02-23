@@ -1,6 +1,8 @@
 package com.tqhit.adlib.sdk.ads
 
 import android.content.Context
+import android.util.Log
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -12,8 +14,13 @@ import javax.inject.Singleton
 
 @Singleton
 class AdmobHelper @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val bannerHelper: BannerHelper,
+    private val interstitialHelper: InterstitialHelper,
+    private val rewardHelper: RewardHelper,
+    private val nativeHelper: NativeHelper
 ) {
+    private val TAG : String = AdmobHelper::class.java.simpleName
 
     fun initAdmob() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -23,6 +30,7 @@ class AdmobHelper @Inject constructor(
                     .build()
             )
             MobileAds.initialize(context) { _ ->
+                Log.d(TAG, "Admob initialized")
             }
         }
     }
