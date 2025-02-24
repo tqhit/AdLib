@@ -6,15 +6,15 @@ import com.tqhit.adlib.sdk.base.AdLibBaseApplication
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
-@HiltAndroidApp
+//@HiltAndroidApp
 open class AdLibHiltApplication : AdLibBaseApplication() {
-    @Inject lateinit var adjustAnalyticsHelper: AdjustAnalyticsHelper
-    @Inject lateinit var admobHelper: AdmobHelper
+//    @Inject lateinit var adjustAnalyticsHelper: AdjustAnalyticsHelper
+//    @Inject lateinit var admobHelper: AdmobHelper
 
     override fun onCreateExt() {
         super.onCreateExt()
 
-        admobHelper.initAdmob()
-        adjustAnalyticsHelper.initAdjust()
+//        admobHelper.initAdmob()
+//        adjustAnalyticsHelper.initAdjust()
     }
 }
