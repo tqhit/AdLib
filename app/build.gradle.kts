@@ -1,10 +1,9 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id("com.android.library")
     alias(libs.plugins.kotlin.android)
     id("com.google.dagger.hilt.android")
-    alias(libs.plugins.google.gms.google.services)
-    alias(libs.plugins.google.firebase.crashlytics)
     id("kotlin-kapt")
+    id("maven-publish")
 }
 
 android {
@@ -12,11 +11,8 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.tqhit.adlib"
         minSdk = 21
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -76,4 +72,17 @@ dependencies {
 
 kapt {
     correctErrorTypes = true
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            afterEvaluate {
+                from(components["release"])
+                groupId = "com.github.tqhit"
+                artifactId = "tqhit-adlib"
+                version = "1.0.0"
+            }
+        }
+    }
 }
