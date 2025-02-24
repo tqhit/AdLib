@@ -8,6 +8,7 @@ import com.tqhit.adlib.sdk.ads.InterstitialHelper
 import com.tqhit.adlib.sdk.ads.NativeHelper
 import com.tqhit.adlib.sdk.ads.RewardHelper
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,7 +42,8 @@ object AdmobModule {
     @Singleton
     fun provideBannerHelper(
         admobConsentHelper: AdmobConsentHelper,
-        analyticsTracker: AnalyticsTracker
+        analyticsTracker: AnalyticsTracker,
+        loadingAdsDialog: LoadingAdsDialog
     ): BannerHelper {
         return BannerHelper(admobConsentHelper, analyticsTracker)
     }
@@ -50,7 +52,8 @@ object AdmobModule {
     @Singleton
     fun provideInterstitialHelper(
         admobConsentHelper: AdmobConsentHelper,
-        analyticsTracker: AnalyticsTracker
+        analyticsTracker: AnalyticsTracker,
+        loadingAdsDialog: LoadingAdsDialog
     ): InterstitialHelper {
         return InterstitialHelper(admobConsentHelper, analyticsTracker)
     }
@@ -59,7 +62,8 @@ object AdmobModule {
     @Singleton
     fun provideNativeHelper(
         admobConsentHelper: AdmobConsentHelper,
-        analyticsTracker: AnalyticsTracker
+        analyticsTracker: AnalyticsTracker,
+        loadingAdsDialog: LoadingAdsDialog
     ): NativeHelper {
         return NativeHelper(admobConsentHelper, analyticsTracker)
     }
@@ -68,8 +72,15 @@ object AdmobModule {
     @Singleton
     fun provideRewardHelper(
         admobConsentHelper: AdmobConsentHelper,
-        analyticsTracker: AnalyticsTracker
+        analyticsTracker: AnalyticsTracker,
+        loadingAdsDialog: LoadingAdsDialog
     ): RewardHelper {
         return RewardHelper(admobConsentHelper, analyticsTracker)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLoadingAdsDialog(@ApplicationContext context: Context): LoadingAdsDialog {
+        return LoadingAdsDialog(context)
     }
 }

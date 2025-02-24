@@ -11,6 +11,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.tqhit.adlib.sdk.ads.callback.RewardAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import com.tqhit.adlib.sdk.utils.Constant
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,7 +19,8 @@ import javax.inject.Singleton
 @Singleton
 class RewardHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
-    private val analyticsTracker: AnalyticsTracker
+    private val analyticsTracker: AnalyticsTracker,
+    private val loadingAdsDialog: LoadingAdsDialog
 ) {
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()
@@ -114,14 +116,18 @@ class RewardHelper @Inject constructor(
 
         analyticsTracker.trackEvent("aj_reward_load")
 
+        if (loadingAdsDialog.isShowing) loadingAdsDialog.dismiss()
+        loadingAdsDialog.show()
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_REWARDED_AD_UNIT_ID else rewardAdUnitId
         RewardedAd.load(activity, adUnitId, getAdRequest(timeOutMilliSecond ?: 60000), object: RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 adCallback?.onAdFailedToLoad(adError)
+                loadingAdsDialog.dismiss()
             }
 
             override fun onAdLoaded(rewardedAd: RewardedAd) {
                 adCallback?.onAdLoaded(rewardedAd)
+                loadingAdsDialog.dismiss()
             }
         })
     }

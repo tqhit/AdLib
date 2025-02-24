@@ -14,6 +14,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
 import com.tqhit.adlib.sdk.ads.callback.BannerAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import com.tqhit.adlib.sdk.utils.Constant
 import java.util.UUID
 import javax.inject.Inject
@@ -22,7 +23,8 @@ import javax.inject.Singleton
 @Singleton
 class BannerHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
-    private val analyticsTracker: AnalyticsTracker
+    private val analyticsTracker: AnalyticsTracker,
+    private val loadingAdsDialog: LoadingAdsDialog
 ) {
     private fun getCollapsibleAdRequest(timeout: Int = 60000): AdRequest {
         val builder = AdRequest.Builder().setHttpTimeoutMillis(timeout)
