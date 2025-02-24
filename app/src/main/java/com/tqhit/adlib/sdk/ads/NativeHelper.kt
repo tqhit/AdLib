@@ -25,8 +25,7 @@ import javax.inject.Singleton
 @Singleton
 class NativeHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
-    private val analyticsTracker: AnalyticsTracker,
-    private val loadingAdsDialog: LoadingAdsDialog
+    private val analyticsTracker: AnalyticsTracker
 ) {
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()

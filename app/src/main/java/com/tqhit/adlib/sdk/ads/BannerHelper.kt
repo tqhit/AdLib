@@ -23,8 +23,7 @@ import javax.inject.Singleton
 @Singleton
 class BannerHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
-    private val analyticsTracker: AnalyticsTracker,
-    private val loadingAdsDialog: LoadingAdsDialog
+    private val analyticsTracker: AnalyticsTracker
 ) {
     private fun getCollapsibleAdRequest(timeout: Int = 60000): AdRequest {
         val builder = AdRequest.Builder().setHttpTimeoutMillis(timeout)

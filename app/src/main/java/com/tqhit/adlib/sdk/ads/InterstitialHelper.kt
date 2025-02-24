@@ -18,8 +18,7 @@ import javax.inject.Singleton
 @Singleton
 class InterstitialHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
-    private val analyticsTracker: AnalyticsTracker,
-    private val loadingAdsDialog: LoadingAdsDialog
+    private val analyticsTracker: AnalyticsTracker
 ) {
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()
@@ -111,6 +110,7 @@ class InterstitialHelper @Inject constructor(
 
         analyticsTracker.trackEvent("aj_inters_load")
 
+        val loadingAdsDialog = LoadingAdsDialog(activity)
         if (loadingAdsDialog.isShowing) loadingAdsDialog.dismiss()
         loadingAdsDialog.show()
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_INTERSTITIAL_AD_UNIT_ID else interstitialAdUnitId
