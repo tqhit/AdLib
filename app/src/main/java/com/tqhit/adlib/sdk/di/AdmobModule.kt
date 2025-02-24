@@ -45,7 +45,7 @@ object AdmobModule {
         analyticsTracker: AnalyticsTracker,
         loadingAdsDialog: LoadingAdsDialog
     ): BannerHelper {
-        return BannerHelper(admobConsentHelper, analyticsTracker)
+        return BannerHelper(admobConsentHelper, analyticsTracker, loadingAdsDialog)
     }
 
     @Provides
@@ -55,7 +55,7 @@ object AdmobModule {
         analyticsTracker: AnalyticsTracker,
         loadingAdsDialog: LoadingAdsDialog
     ): InterstitialHelper {
-        return InterstitialHelper(admobConsentHelper, analyticsTracker)
+        return InterstitialHelper(admobConsentHelper, analyticsTracker, loadingAdsDialog)
     }
 
     @Provides
@@ -65,7 +65,7 @@ object AdmobModule {
         analyticsTracker: AnalyticsTracker,
         loadingAdsDialog: LoadingAdsDialog
     ): NativeHelper {
-        return NativeHelper(admobConsentHelper, analyticsTracker)
+        return NativeHelper(admobConsentHelper, analyticsTracker, loadingAdsDialog)
     }
 
     @Provides
@@ -75,7 +75,7 @@ object AdmobModule {
         analyticsTracker: AnalyticsTracker,
         loadingAdsDialog: LoadingAdsDialog
     ): RewardHelper {
-        return RewardHelper(admobConsentHelper, analyticsTracker)
+        return RewardHelper(admobConsentHelper, analyticsTracker, loadingAdsDialog)
     }
 
     @Provides
