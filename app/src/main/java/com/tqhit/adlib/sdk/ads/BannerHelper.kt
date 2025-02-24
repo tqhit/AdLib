@@ -40,7 +40,7 @@ class BannerHelper @Inject constructor(
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, i)
     }
 
-    fun showBannerAd(
+    fun showBanner(
         activity: Activity,
         bannerAdUnitId: String,
         parent: ViewGroup,

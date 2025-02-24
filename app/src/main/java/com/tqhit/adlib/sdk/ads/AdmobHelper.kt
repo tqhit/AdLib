@@ -1,10 +1,20 @@
 package com.tqhit.adlib.sdk.ads
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
+import android.view.ViewGroup
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.tqhit.adlib.sdk.ads.callback.BannerAdCallback
+import com.tqhit.adlib.sdk.ads.callback.InterstitialAdCallback
+import com.tqhit.adlib.sdk.ads.callback.NativeAdCallback
+import com.tqhit.adlib.sdk.ads.callback.RewardAdCallback
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,5 +43,129 @@ class AdmobHelper @Inject constructor(
                 Log.d(TAG, "Admob initialized")
             }
         }
+    }
+
+    fun showBanner(
+        activity: Activity,
+        bannerAdUnitId: String,
+        parent: ViewGroup,
+        timeoutMilliSecond: Int?,
+        adCallback: BannerAdCallback?
+    ) {
+        bannerHelper.showBanner(
+            activity,
+            bannerAdUnitId,
+            parent,
+            timeoutMilliSecond,
+            adCallback
+        )
+    }
+
+    fun loadInterstitial(
+        activity: Activity,
+        interstitialAdUnitId: String,
+        timeoutMilliSecond: Int?,
+        adCallback: InterstitialAdCallback?
+    ) {
+        interstitialHelper.loadInterstitial(
+            activity,
+            interstitialAdUnitId,
+            timeoutMilliSecond,
+            adCallback
+        )
+    }
+
+    fun showInterstitial(
+        activity: Activity,
+        interstitialAd: InterstitialAd,
+        adCallback: InterstitialAdCallback?
+    ) {
+        interstitialHelper.showInterstitial(
+            activity,
+            interstitialAd,
+            adCallback
+        )
+    }
+
+    fun showInterstitial(
+        activity: Activity,
+        interstitialAdUnitId: String,
+        interstitialAd: InterstitialAd?,
+        timeoutMilliSecond: Int?,
+        adCallback: InterstitialAdCallback?
+    ) {
+        interstitialHelper.showInterstitial(
+            activity,
+            interstitialAdUnitId,
+            interstitialAd,
+            timeoutMilliSecond,
+            adCallback
+        )
+    }
+
+    fun loadReward(
+        activity: Activity,
+        rewardAdUnitId: String,
+        timeOutMilliSecond: Int?,
+        adCallback: RewardAdCallback?
+    ) {
+        rewardHelper.loadReward(
+            activity,
+            rewardAdUnitId,
+            timeOutMilliSecond,
+            adCallback
+        )
+    }
+
+    fun showReward(
+        activity: Activity,
+        rewardedAd: RewardedAd,
+        adCallback: RewardAdCallback?
+    ) {
+        rewardHelper.showReward(
+            activity,
+            rewardedAd,
+            adCallback
+        )
+    }
+
+    fun showReward(
+        activity: Activity,
+        rewardAdUnitId: String,
+        rewardedAd: RewardedAd?,
+        timeOutMilliSecond: Int?,
+        adCallback: RewardAdCallback?
+    ) {
+        rewardHelper.showReward(
+            activity,
+            rewardAdUnitId,
+            rewardedAd,
+            timeOutMilliSecond,
+            adCallback
+        )
+    }
+
+    fun loadNative(
+        context: Context,
+        nativeAdUnitId: String,
+        timeOutMilliSecond: Int?,
+        adCallback: NativeAdCallback?
+    ) {
+        nativeHelper.loadNative(
+            context,
+            nativeAdUnitId,
+            timeOutMilliSecond,
+            adCallback
+        )
+    }
+
+    fun showNative(
+        nativeAd: NativeAd,
+        nativeAdView: NativeAdView
+    ) {
+        nativeHelper.showNative(
+            nativeAd,
+            nativeAdView
+        )
     }
 }
