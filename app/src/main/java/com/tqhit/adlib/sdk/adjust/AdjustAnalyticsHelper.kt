@@ -17,14 +17,14 @@ class AdjustAnalyticsHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    fun initAdjust() {
+    fun initAdjust(token: String) {
         val environment = if (Constant.DEBUG_MODE) {
             AdjustConfig.ENVIRONMENT_SANDBOX
         } else {
             AdjustConfig.ENVIRONMENT_PRODUCTION
         }
 
-        val config = AdjustConfig(context, Constant.ADJUST_TOKEN, environment)  // Use application context
+        val config = AdjustConfig(context, token, environment)
         config.setLogLevel(if (Constant.DEBUG_MODE) LogLevel.VERBOSE else LogLevel.WARN)
 
         Adjust.initSdk(config)
