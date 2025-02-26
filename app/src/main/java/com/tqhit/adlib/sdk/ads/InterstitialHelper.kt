@@ -111,18 +111,21 @@ class InterstitialHelper @Inject constructor(
         analyticsTracker.trackEvent("aj_inters_load")
 
         val loadingAdsDialog = LoadingAdsDialog(activity)
-        if (loadingAdsDialog.isShowing) loadingAdsDialog.dismiss()
         loadingAdsDialog.show()
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_INTERSTITIAL_AD_UNIT_ID else interstitialAdUnitId
         InterstitialAd.load(activity, adUnitId, getAdRequest(timeoutMilliSecond ?: 60000), object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 adCallback?.onAdLoaded(interstitialAd)
-                loadingAdsDialog.dismiss()
+                if (loadingAdsDialog.isShowing) {
+                    loadingAdsDialog.dismiss()
+                }
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 adCallback?.onAdFailedToLoad(adError)
-                loadingAdsDialog.dismiss()
+                if (loadingAdsDialog.isShowing) {
+                    loadingAdsDialog.dismiss()
+                }
             }
         })
     }
