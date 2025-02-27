@@ -2,6 +2,7 @@ package com.tqhit.adlib.sdk.ads
 
 import android.app.Activity
 import android.content.Context
+import android.net.ConnectivityManager
 import android.util.Log
 import android.view.ViewGroup
 import com.google.android.gms.ads.AdRequest
@@ -43,6 +44,19 @@ class AdmobHelper @Inject constructor(
                 Log.d(TAG, "Admob initialized")
             }
         }
+    }
+
+    fun isNetwork(context: Context?): Boolean {
+        if (context == null) return false
+        val systemService = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+        val connectivityManager = systemService as ConnectivityManager
+        if (connectivityManager.activeNetworkInfo != null) {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            if (activeNetworkInfo?.isConnected == true) {
+                return true
+            }
+        }
+        return false
     }
 
     fun showBanner(
