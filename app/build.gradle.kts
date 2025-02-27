@@ -63,6 +63,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.lottie)
+    implementation(libs.shimmer)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
