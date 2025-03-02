@@ -34,11 +34,72 @@ class BannerHelper @Inject constructor(
         return builder.build()
     }
 
+    private fun getAdRequest(timeout: Int = 60000): AdRequest {
+        return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()
+    }
+
     private fun getAdSize(activity: Activity): AdSize {
         val displayMetrics = DisplayMetrics()
         activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
         val i = (displayMetrics.widthPixels / displayMetrics.density).toInt()
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, i)
+    }
+
+    fun showCollapsibleBanner(
+        activity: Activity,
+        bannerAdUnitId: String,
+        parent: ViewGroup,
+        timeoutMilliSecond: Int?,
+        adCallback: BannerAdCallback?
+    ) {
+        if (!admobConsentHelper.canRequestAds())
+        {
+            adCallback?.onAdFailedToLoad();
+            return
+        }
+        analyticsTracker.trackEvent("aj_banner_load")
+        val adView = AdView(activity)
+        val adRequest = getCollapsibleAdRequest(timeoutMilliSecond ?: 60000)
+        adView.apply {
+            adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_BANNER_AD_UNIT_ID else bannerAdUnitId
+            adListener = object : AdListener() {
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    super.onAdFailedToLoad(loadAdError)
+                    adCallback?.onAdFailedToLoad(loadAdError)
+                    analyticsTracker.logEvent("load_ad_failed", mapOf(
+                        "ad_unit_id" to bannerAdUnitId,
+                        "ad_error_message" to loadAdError.message
+                    ))
+                }
+
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    adCallback?.onAdLoaded()
+                    analyticsTracker.trackEvent("aj_banner_displayed")
+                }
+
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    adCallback?.onAdClicked()
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    adCallback?.onAdImpression()
+                }
+            }
+            onPaidEventListener = OnPaidEventListener { adValue ->
+                analyticsTracker.trackRevenueEvent(
+                    adValue,
+                    adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
+                    "Banner"
+                )
+            }
+        }
+        adView.setAdSize(getAdSize(activity))
+        adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        adView.loadAd(adRequest)
+        parent.addView(adView)
     }
 
     fun showBanner(
@@ -55,7 +116,7 @@ class BannerHelper @Inject constructor(
         }
         analyticsTracker.trackEvent("aj_banner_load")
         val adView = AdView(activity)
-        val adRequest = getCollapsibleAdRequest(timeoutMilliSecond ?: 60000)
+        val adRequest = getAdRequest(timeoutMilliSecond ?: 60000)
         adView.apply {
             adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_BANNER_AD_UNIT_ID else bannerAdUnitId
             adListener = object : AdListener() {
