@@ -6,4 +6,5 @@
     <string name="restart_app">Restart app</string>
     <string name="close_app">Close app</string>
     <string name="loading_ads">Loading Ads...</string>
+    <string name="please_wait_until_setup_process_is_complete">Please wait until setup process is complete.</string>
 </resources>
