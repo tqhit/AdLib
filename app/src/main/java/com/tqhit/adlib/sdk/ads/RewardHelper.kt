@@ -46,7 +46,7 @@ class RewardHelper @Inject constructor(
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError?) {
-                    adCallback?.onAdFailedToLoad()
+                    adCallback?.onAdFailedToLoad(adError)
                 }
             })
         }
@@ -78,7 +78,7 @@ class RewardHelper @Inject constructor(
 
                 override fun onAdFailedToShowFullScreenContent(var0: AdError) {
                     super.onAdFailedToShowFullScreenContent(var0)
-                    adCallback?.onAdFailedToLoad()
+                    adCallback?.onAdFailedToShowFullScreenContent(var0)
                 }
 
                 override fun onAdShowedFullScreenContent() {
@@ -109,7 +109,7 @@ class RewardHelper @Inject constructor(
         adCallback: RewardAdCallback?
     ) {
         if (!admobConsentHelper.canRequestAds()) {
-            adCallback?.onAdFailedToLoad()
+            adCallback?.onAdFailedToLoad(null)
             return
         }
 

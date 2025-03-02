@@ -18,7 +18,6 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.tqhit.adlib.R
 import com.tqhit.adlib.sdk.ads.callback.NativeAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
-import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import com.tqhit.adlib.sdk.utils.Constant
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -68,7 +67,7 @@ class NativeHelper @Inject constructor(
             }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
-                    adCallback?.onAdFailedToLoad()
+                    adCallback?.onAdFailedToLoad(adError)
                 }
 
                 override fun onAdImpression() {

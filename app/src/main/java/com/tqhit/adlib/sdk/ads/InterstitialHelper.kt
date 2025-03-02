@@ -42,7 +42,7 @@ class InterstitialHelper @Inject constructor(
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError?) {
-                    adCallback?.onAdFailedToLoad()
+                    adCallback?.onAdFailedToLoad(adError)
                     adCallback?.onAdClosed()
                 }
             })
@@ -104,7 +104,7 @@ class InterstitialHelper @Inject constructor(
         adCallback: InterstitialAdCallback?
     ) {
         if (!admobConsentHelper.canRequestAds()) {
-            adCallback?.onAdFailedToLoad()
+            adCallback?.onAdFailedToLoad(null)
             return
         }
 
