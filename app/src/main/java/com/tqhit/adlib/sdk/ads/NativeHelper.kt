@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -83,6 +84,53 @@ class NativeHelper @Inject constructor(
             .withNativeAdOptions(adOptions)
             .build()
         adLoader.loadAd(getAdRequest(timeOutMilliSecond ?: 60000))
+    }
+
+    fun preloadNative(
+        context: Context,
+        nativeAdUnitId: String,
+        timeOutMilliSeconds: Int?,
+        adCallback: NativeAdCallback?,
+        nativeLiveData: MutableLiveData<Any>
+    ) {
+        loadNative(
+            context,
+            nativeAdUnitId,
+            timeOutMilliSeconds,
+            object: NativeAdCallback() {
+                override fun onAdClosed() {
+                    super.onAdClosed()
+                    adCallback?.onAdClosed()
+                }
+
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    adCallback?.onAdImpression()
+                }
+
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    adCallback?.onAdClicked()
+                }
+
+                override fun onAdFailedToLoad(adError: LoadAdError?) {
+                    super.onAdFailedToLoad(adError)
+                    adCallback?.onAdFailedToLoad(adError)
+                    nativeLiveData.postValue(adError)
+                }
+
+                override fun onAdLoaded(nativeAd: NativeAd) {
+                    super.onAdLoaded(nativeAd)
+                    adCallback?.onAdLoaded(nativeAd)
+                    nativeLiveData.postValue(nativeAd)
+                }
+
+                override fun onAdOpened() {
+                    super.onAdOpened()
+                    adCallback?.onAdOpened()
+                }
+            }
+        )
     }
 
     fun showNative(

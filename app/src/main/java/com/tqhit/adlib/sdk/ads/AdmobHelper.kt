@@ -5,7 +5,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -170,6 +172,22 @@ class AdmobHelper @Inject constructor(
             nativeAdUnitId,
             timeOutMilliSecond,
             adCallback
+        )
+    }
+
+    fun preloadNative(
+        context: Context,
+        nativeAdUnitId: String,
+        timeOutMilliSecond: Int?,
+        adCallback: NativeAdCallback?,
+        nativeLiveData: MutableLiveData<Any>
+    ) {
+        nativeHelper.preloadNative(
+            context,
+            nativeAdUnitId,
+            timeOutMilliSecond,
+            adCallback,
+            nativeLiveData
         )
     }
 
