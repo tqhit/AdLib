@@ -115,12 +115,18 @@ class NativeHelper @Inject constructor(
                 override fun onAdFailedToLoad(adError: LoadAdError?) {
                     super.onAdFailedToLoad(adError)
                     adCallback?.onAdFailedToLoad(adError)
+                    if (nativeLiveData.value != null && nativeLiveData.value is NativeAd) {
+                        (nativeLiveData.value as NativeAd).destroy()
+                    }
                     nativeLiveData.postValue(adError)
                 }
 
                 override fun onAdLoaded(nativeAd: NativeAd) {
                     super.onAdLoaded(nativeAd)
                     adCallback?.onAdLoaded(nativeAd)
+                    if (nativeLiveData.value != null && nativeLiveData.value is NativeAd) {
+                        (nativeLiveData.value as NativeAd).destroy()
+                    }
                     nativeLiveData.postValue(nativeAd)
                 }
 

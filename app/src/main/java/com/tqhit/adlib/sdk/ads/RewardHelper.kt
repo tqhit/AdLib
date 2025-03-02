@@ -40,13 +40,21 @@ class RewardHelper @Inject constructor(
         analyticsTracker.trackEvent("aj_reward_load")
 
         if (rewardedAd == null) {
+            val loadingAdsDialog = LoadingAdsDialog(activity)
+            loadingAdsDialog.show()
             loadReward(activity, rewardAdUnitId, timeOutMilliSecond, object : RewardAdCallback() {
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
                     showReward(activity, rewardedAd, adCallback)
+                    if (loadingAdsDialog.isShowing) {
+                        loadingAdsDialog.dismiss()
+                    }
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError?) {
                     adCallback?.onAdFailedToLoad(adError)
+                    if (loadingAdsDialog.isShowing) {
+                        loadingAdsDialog.dismiss()
+                    }
                 }
             })
         }
@@ -115,22 +123,14 @@ class RewardHelper @Inject constructor(
 
         analyticsTracker.trackEvent("aj_reward_load")
 
-        val loadingAdsDialog = LoadingAdsDialog(activity)
-        loadingAdsDialog.show()
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_REWARDED_AD_UNIT_ID else rewardAdUnitId
         RewardedAd.load(activity, adUnitId, getAdRequest(timeOutMilliSecond ?: 60000), object: RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 adCallback?.onAdFailedToLoad(adError)
-                if (loadingAdsDialog.isShowing) {
-                    loadingAdsDialog.dismiss()
-                }
             }
 
             override fun onAdLoaded(rewardedAd: RewardedAd) {
                 adCallback?.onAdLoaded(rewardedAd)
-                if (loadingAdsDialog.isShowing) {
-                    loadingAdsDialog.dismiss()
-                }
             }
         })
     }

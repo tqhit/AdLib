@@ -36,14 +36,22 @@ class InterstitialHelper @Inject constructor(
             return
         }
         if (interstitialAd == null) {
+            val loadingAdsDialog = LoadingAdsDialog(activity)
+            loadingAdsDialog.show()
             loadInterstitial(activity, interstitialAdUnitId, timeoutMilliSecond, object : InterstitialAdCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     showInterstitial(activity, interstitialAd, adCallback)
+                    if (loadingAdsDialog.isShowing) {
+                        loadingAdsDialog.dismiss()
+                    }
                 }
 
                 override fun onAdFailedToLoad(adError: LoadAdError?) {
                     adCallback?.onAdFailedToLoad(adError)
                     adCallback?.onAdClosed()
+                    if (loadingAdsDialog.isShowing) {
+                        loadingAdsDialog.dismiss()
+                    }
                 }
             })
         }
@@ -110,22 +118,14 @@ class InterstitialHelper @Inject constructor(
 
         analyticsTracker.trackEvent("aj_inters_load")
 
-        val loadingAdsDialog = LoadingAdsDialog(activity)
-        loadingAdsDialog.show()
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_INTERSTITIAL_AD_UNIT_ID else interstitialAdUnitId
         InterstitialAd.load(activity, adUnitId, getAdRequest(timeoutMilliSecond ?: 60000), object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 adCallback?.onAdLoaded(interstitialAd)
-                if (loadingAdsDialog.isShowing) {
-                    loadingAdsDialog.dismiss()
-                }
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 adCallback?.onAdFailedToLoad(adError)
-                if (loadingAdsDialog.isShowing) {
-                    loadingAdsDialog.dismiss()
-                }
             }
         })
     }
