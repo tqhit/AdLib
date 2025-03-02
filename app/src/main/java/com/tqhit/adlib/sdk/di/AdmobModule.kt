@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import com.tqhit.adlib.sdk.ads.AdmobConsentHelper
 import com.tqhit.adlib.sdk.ads.AdmobHelper
+import com.tqhit.adlib.sdk.ads.AppOpenHelper
 import com.tqhit.adlib.sdk.ads.BannerHelper
 import com.tqhit.adlib.sdk.ads.InterstitialHelper
 import com.tqhit.adlib.sdk.ads.NativeHelper
 import com.tqhit.adlib.sdk.ads.RewardHelper
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import dagger.Module
 import dagger.Provides
@@ -34,9 +36,10 @@ object AdmobModule {
         bannerHelper: BannerHelper,
         interstitialHelper: InterstitialHelper,
         rewardHelper: RewardHelper,
-        nativeHelper: NativeHelper
+        nativeHelper: NativeHelper,
+        appOpenHelper: AppOpenHelper
     ): AdmobHelper {
-        return AdmobHelper(context, bannerHelper, interstitialHelper, rewardHelper, nativeHelper)
+        return AdmobHelper(context, bannerHelper, interstitialHelper, rewardHelper, nativeHelper, appOpenHelper)
     }
 
     @Provides
@@ -73,5 +76,15 @@ object AdmobModule {
         analyticsTracker: AnalyticsTracker,
     ): RewardHelper {
         return RewardHelper(admobConsentHelper, analyticsTracker)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppOpenHelper(
+        admobConsentHelper: AdmobConsentHelper,
+        analyticsTracker: AnalyticsTracker,
+        remoteConfigHelper: FirebaseRemoteConfigHelper
+    ): AppOpenHelper {
+        return AppOpenHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
     }
 }

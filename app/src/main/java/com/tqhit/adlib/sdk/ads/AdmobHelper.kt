@@ -29,7 +29,8 @@ class AdmobHelper @Inject constructor(
     private val bannerHelper: BannerHelper,
     private val interstitialHelper: InterstitialHelper,
     private val rewardHelper: RewardHelper,
-    private val nativeHelper: NativeHelper
+    private val nativeHelper: NativeHelper,
+    private val appOpenHelper: AppOpenHelper
 ) {
     private val TAG : String = AdmobHelper::class.java.simpleName
 
@@ -57,6 +58,22 @@ class AdmobHelper @Inject constructor(
             }
         }
         return false
+    }
+
+    fun showCollapsibleBanner(
+        activity: Activity,
+        bannerAdUnitId: String,
+        parent: ViewGroup,
+        timeoutMilliSecond: Int?,
+        adCallback: BannerAdCallback?
+    ) {
+        bannerHelper.showCollapsibleBanner(
+            activity,
+            bannerAdUnitId,
+            parent,
+            timeoutMilliSecond,
+            adCallback
+        )
     }
 
     fun showBanner(
@@ -197,5 +214,20 @@ class AdmobHelper @Inject constructor(
             nativeAd,
             nativeAdView
         )
+    }
+
+    fun setAOAAdUnitId(adUnitId: String) {
+        appOpenHelper.setAdUnitId(adUnitId)
+    }
+
+    fun showAOA(
+        activity: Activity,
+        adCallback: AppOpenHelper.OnShowAdCompleteListener?
+    ) {
+        appOpenHelper.showAdIfAvailable(activity, object : AppOpenHelper.OnShowAdCompleteListener {
+            override fun onShowAdComplete() {
+                adCallback?.onShowAdComplete()
+            }
+        })
     }
 }
