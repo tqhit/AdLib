@@ -60,7 +60,7 @@ class BannerHelper @Inject constructor(
         val adView = AdView(activity)
         val adRequest = getCollapsibleAdRequest(timeoutMilliSecond ?: 60000)
         adView.apply {
-            adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_BANNER_AD_UNIT_ID else bannerAdUnitId
+            adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_COLLAPSIBLE_BANNER_AD_UNIT_ID else bannerAdUnitId
             adListener = object : AdListener() {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     super.onAdFailedToLoad(loadAdError)
