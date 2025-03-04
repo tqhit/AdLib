@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.google.android.gms.ads.AdActivity
 import com.tqhit.adlib.sdk.ui.crash.AdLibCustomCrashActivity
@@ -43,6 +44,7 @@ abstract class AdLibBaseApplication : Application(), Application.ActivityLifecyc
         if (isDebugMode()) {
             setupCAOC()
         }
+        ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
