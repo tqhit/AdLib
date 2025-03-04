@@ -4,13 +4,15 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.google.android.gms.ads.AdActivity
 import com.tqhit.adlib.sdk.ui.crash.AdLibCustomCrashActivity
 import com.tqhit.adlib.sdk.utils.Constant
 
-abstract class AdLibBaseApplication : Application(), Application.ActivityLifecycleCallbacks {
+abstract class AdLibBaseApplication : Application(), Application.ActivityLifecycleCallbacks, LifecycleEventObserver {
     protected var currentActivity: Activity? = null
 
     open fun onCreateExt() {}
@@ -66,7 +68,12 @@ abstract class AdLibBaseApplication : Application(), Application.ActivityLifecyc
     override fun onActivityDestroyed(activity: Activity) {
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     protected open fun onMoveToForeground() {
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_START) {
+            onMoveToForeground()
+        }
     }
 }
