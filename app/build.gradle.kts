@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.ssp.android)
     implementation(libs.sdp.android)
+    implementation(libs.androidx.lifecycle.process)
 }
 
 kapt {

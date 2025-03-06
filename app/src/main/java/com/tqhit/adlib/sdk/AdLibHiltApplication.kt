@@ -2,6 +2,7 @@ package com.tqhit.adlib.sdk
 
 import android.app.Activity
 import android.os.Bundle
+import androidx.annotation.XmlRes
 import com.tqhit.adlib.R
 import com.tqhit.adlib.sdk.adjust.AdjustAnalyticsHelper
 import com.tqhit.adlib.sdk.ads.AdmobHelper
@@ -23,24 +24,22 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         super.onCreateExt()
 
         initAdmob()
-        initRemoteConfig()
-        initTracker()
     }
 
     open fun initAdmob() {
         admobHelper.initAdmob()
     }
 
-    open fun initRemoteConfig() {
-        remoteConfigHelper.fetchAndActivate({}, R.xml.remote_config_defaults)
+    fun initRemoteConfig(@XmlRes defaultConfig: Int) {
+        remoteConfigHelper.fetchAndActivate({}, defaultConfig)
     }
 
-    open fun initTracker() {
-        analyticsHelper.initAdjust("{token}")
+    fun initTracker(token: String) {
+        analyticsHelper.initAdjust(token)
     }
 
-    override fun onMoveToForeground() {
-        super.onMoveToForeground()
+    override fun showAOA() {
+        super.showAOA()
 
         if (currentActivity != null) {
             appOpenHelper.showAdIfAvailable(currentActivity!!, object :

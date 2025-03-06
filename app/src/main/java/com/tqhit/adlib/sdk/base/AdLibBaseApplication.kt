@@ -40,6 +40,7 @@ abstract class AdLibBaseApplication : Application(), Application.ActivityLifecyc
 
     override fun onCreate() {
         super.onCreate()
+        registerActivityLifecycleCallbacks(this)
         onCreateExt()
         if (isDebugMode()) {
             setupCAOC()
