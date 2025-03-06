@@ -216,7 +216,7 @@ class AdmobHelper @Inject constructor(
         )
     }
 
-    fun setAOAAdUnitId(adUnitId: String) {
+    fun setAppOpenAdUnitId(adUnitId: String) {
         appOpenHelper.setAdUnitId(adUnitId)
     }
 

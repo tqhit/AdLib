@@ -21,12 +21,12 @@ class AppOpenHelper @Inject constructor(
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper
 ) {
+    private val enableAd by lazy { remoteConfigHelper.getBoolean("app_open_ad") }
     private var loadTime: Long = 0
     private var adUnitId = ""
     private var appOpenAd: AppOpenAd? = null
     private var isLoadingAd = false
-    var isShowingAd = false
-    private var isFirstOpen = false
+    private var isShowingAd = false
 
     interface OnShowAdCompleteListener {
         fun onShowAdComplete()
@@ -37,6 +37,7 @@ class AppOpenHelper @Inject constructor(
     }
 
     fun loadAd(context: Context) {
+        if (!enableAd) return
         if (!admobConsentHelper.canRequestAds()) return
         if (isLoadingAd || isAdAvailable()) return
         isLoadingAd = true
@@ -69,22 +70,11 @@ class AppOpenHelper @Inject constructor(
 
     /** Shows the ad if one isn't already showing.  */
     fun showAdIfAvailable(activity: Activity, adCallback: OnShowAdCompleteListener) {
-        if (!isFirstOpen) {
-            loadAd(activity)
-            isFirstOpen = true
+        if (!enableAd || isShowingAd) {
+            adCallback.onShowAdComplete()
             return
         }
 
-        if (!remoteConfigHelper.getBoolean("APP_OPEN_AD")) return
-
-        if (activity is AdActivity) return
-
-        // If the app open ad is already showing, do not show the ad again.
-        if (isShowingAd) {
-            return
-        }
-
-        // If the app open ad is not available yet, invoke the callback then load the ad.
         if (!isAdAvailable()) {
             adCallback.onShowAdComplete()
             loadAd(activity)
