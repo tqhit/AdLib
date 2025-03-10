@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
@@ -167,7 +168,12 @@ class NativeHelper @Inject constructor(
                 it.visibility = View.INVISIBLE
             } else {
                 it.visibility = View.VISIBLE
-                (it as TextView).text = nativeAd.callToAction
+                if (it is TextView) {
+                    it.text = nativeAd.callToAction
+                }
+                if (it is AppCompatButton) {
+                    it.text = nativeAd.callToAction
+                }
             }
         }
 
