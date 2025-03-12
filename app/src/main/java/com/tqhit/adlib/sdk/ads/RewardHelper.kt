@@ -41,7 +41,8 @@ class RewardHelper @Inject constructor(
 
         if (rewardedAd == null) {
             val loadingAdsDialog = LoadingAdsDialog(activity)
-            loadingAdsDialog.show()
+            if (!activity.isFinishing && !activity.isDestroyed)
+                loadingAdsDialog.show()
             loadReward(activity, rewardAdUnitId, timeOutMilliSecond, object : RewardAdCallback() {
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
                     showReward(activity, rewardedAd, adCallback)

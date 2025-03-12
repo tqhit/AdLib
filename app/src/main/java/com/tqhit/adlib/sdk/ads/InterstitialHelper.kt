@@ -37,7 +37,8 @@ class InterstitialHelper @Inject constructor(
         }
         if (interstitialAd == null) {
             val loadingAdsDialog = LoadingAdsDialog(activity)
-            loadingAdsDialog.show()
+            if (!activity.isFinishing && !activity.isDestroyed)
+                loadingAdsDialog.show()
             loadInterstitial(activity, interstitialAdUnitId, timeoutMilliSecond, object : InterstitialAdCallback() {
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     showInterstitial(activity, interstitialAd, adCallback)
