@@ -20,6 +20,6 @@ class FirebaseAnalyticsHelper @Inject constructor(
                 }
             }
         }
-        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
+        firebaseAnalytics.logEvent(eventName, bundle)
     }
 }

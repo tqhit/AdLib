@@ -53,6 +53,6 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         super.onActivityCreated(activity, savedInstanceState)
 
-        analyticsTracker.logEvent("view_${activity.localClassName.lowercase()}")
+        analyticsTracker.logEvent("view_${activity.javaClass.simpleName.lowercase()}")
     }
 }
