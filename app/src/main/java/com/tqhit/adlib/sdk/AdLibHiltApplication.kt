@@ -3,7 +3,6 @@ package com.tqhit.adlib.sdk
 import android.app.Activity
 import android.os.Bundle
 import androidx.annotation.XmlRes
-import com.tqhit.adlib.R
 import com.tqhit.adlib.sdk.adjust.AdjustAnalyticsHelper
 import com.tqhit.adlib.sdk.ads.AdmobHelper
 import com.tqhit.adlib.sdk.ads.AppOpenHelper
@@ -12,7 +11,7 @@ import com.tqhit.adlib.sdk.base.AdLibBaseApplication
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import javax.inject.Inject
 
-//@HiltAndroidApp
+// @HiltAndroidApp
 open class AdLibHiltApplication : AdLibBaseApplication() {
     @Inject lateinit var admobHelper: AdmobHelper
     @Inject lateinit var appOpenHelper: AppOpenHelper
@@ -42,11 +41,12 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         super.showAOA()
 
         if (currentActivity != null) {
-            appOpenHelper.showAdIfAvailable(currentActivity!!, object :
-                AppOpenHelper.OnShowAdCompleteListener {
-                override fun onShowAdComplete() {
-                }
-            })
+            appOpenHelper.showAdIfAvailable(
+                    currentActivity!!,
+                    object : AppOpenHelper.OnShowAdCompleteListener {
+                        override fun onShowAdComplete() {}
+                    }
+            )
         }
     }
 
