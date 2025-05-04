@@ -14,9 +14,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AdLibBaseActivity<ActivityMainBinding>() {
-    override val layout: Int
-        get() = R.layout.activity_main
-
+    override val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     @Inject lateinit var admobConsentHelper: AdmobConsentHelper
 
     override fun setupData() {

@@ -3,12 +3,12 @@ package com.tqhit.adlib.sdk.ui.crash
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import com.tqhit.adlib.R
 import com.tqhit.adlib.databinding.ActivityAdLibCustomCrashBinding
+import com.tqhit.adlib.databinding.ActivityMainBinding
 import com.tqhit.adlib.sdk.base.ui.AdLibBaseActivity
 import com.tqhit.adlib.sdk.ext.copyToClipboard
 
 class AdLibCustomCrashActivity : AdLibBaseActivity<ActivityAdLibCustomCrashBinding>() {
-    override val layout: Int
-        get() = R.layout.activity_ad_lib_custom_crash
+    override val binding by lazy { ActivityAdLibCustomCrashBinding.inflate(layoutInflater) }
 
     override fun setupData() {
         super.setupData()
