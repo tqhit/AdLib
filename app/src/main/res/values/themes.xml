@@ -12,5 +12,21 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowAnimationStyle">@style/ActivityAnimation</item>
+        <item name="android:windowShowAnimation">@anim/fade_in_new</item>
+        <item name="android:windowHideAnimation">@anim/fade_out_new</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+    <style name="DialogAnimation" parent="">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_show</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_hide</item>
+    </style>
+    <style name="ActivityAnimation">
+        <item name="android:activityOpenEnterAnimation">@anim/enter_zoom_out</item>
+        <item name="android:activityOpenExitAnimation">@anim/exit_zoom_in</item>
+        <item name="android:activityCloseEnterAnimation">@anim/enter_zoom_out1</item>
+        <item name="android:activityCloseExitAnimation">@anim/exit_zoom_in1</item>
     </style>
 </resources>

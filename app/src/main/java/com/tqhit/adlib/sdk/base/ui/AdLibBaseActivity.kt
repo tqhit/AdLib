@@ -1,17 +1,16 @@
 package com.tqhit.adlib.sdk.base.ui
 
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.Toast
-import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 
-abstract class AdLibBaseActivity<T: ViewDataBinding> : AppCompatActivity() {
-    protected lateinit var binding: T
-
-    @get:LayoutRes
-    protected abstract val layout: Int
+abstract class AdLibBaseActivity<T: ViewBinding> : AppCompatActivity() {
+    abstract val binding : T
 
     protected open fun setupData() {}
     protected open fun setupListener() {}
@@ -19,15 +18,25 @@ abstract class AdLibBaseActivity<T: ViewDataBinding> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initBinding()
+        setContentView(binding.root)
         setupData()
         setupUI()
         setupListener()
     }
 
-    private fun initBinding() {
-        binding = DataBindingUtil.setContentView(this, layout)
-        binding.lifecycleOwner = this
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        } else {
+            window.insetsController?.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            window.insetsController?.hide(WindowInsets.Type.navigationBars())
+        }
     }
 
     protected fun showToast(message: String) {
