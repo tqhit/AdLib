@@ -31,8 +31,9 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         admobHelper.initAdmob()
     }
 
-    fun initRemoteConfig(@XmlRes defaultConfig: Int) {
-        remoteConfigHelper.fetchAndActivate({}, defaultConfig)
+    fun initRemoteConfig(@XmlRes defaultConfig: Int,
+                         onFetchComplete: ((Boolean) -> Unit)) {
+        remoteConfigHelper.fetchAndActivate(onFetchComplete, defaultConfig)
     }
 
     fun initTracker(token: String) {
