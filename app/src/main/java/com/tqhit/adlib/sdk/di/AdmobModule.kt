@@ -11,7 +11,6 @@ import com.tqhit.adlib.sdk.ads.NativeHelper
 import com.tqhit.adlib.sdk.ads.RewardHelper
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
-import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,8 +46,9 @@ object AdmobModule {
     fun provideBannerHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
+        remoteConfigHelper: FirebaseRemoteConfigHelper
     ): BannerHelper {
-        return BannerHelper(admobConsentHelper, analyticsTracker)
+        return BannerHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
     }
 
     @Provides
@@ -56,8 +56,9 @@ object AdmobModule {
     fun provideInterstitialHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
+        remoteConfigHelper: FirebaseRemoteConfigHelper
     ): InterstitialHelper {
-        return InterstitialHelper(admobConsentHelper, analyticsTracker)
+        return InterstitialHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
     }
 
     @Provides
@@ -65,8 +66,9 @@ object AdmobModule {
     fun provideNativeHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
+        remoteConfigHelper: FirebaseRemoteConfigHelper
     ): NativeHelper {
-        return NativeHelper(admobConsentHelper, analyticsTracker)
+        return NativeHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
     }
 
     @Provides
@@ -74,8 +76,9 @@ object AdmobModule {
     fun provideRewardHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
+        remoteConfigHelper: FirebaseRemoteConfigHelper
     ): RewardHelper {
-        return RewardHelper(admobConsentHelper, analyticsTracker)
+        return RewardHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
     }
 
     @Provides

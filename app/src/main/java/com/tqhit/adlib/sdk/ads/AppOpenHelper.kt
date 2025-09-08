@@ -21,7 +21,7 @@ class AppOpenHelper @Inject constructor(
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper
 ) {
-    private val enableAd by lazy { remoteConfigHelper.getBoolean("app_open_ad") }
+    private val enableAd by lazy { remoteConfigHelper.getBoolean("aoa_enable") }
     private var loadTime: Long = 0
     private var adUnitId = ""
     private var appOpenAd: AppOpenAd? = null

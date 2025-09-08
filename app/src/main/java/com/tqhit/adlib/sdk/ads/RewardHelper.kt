@@ -11,6 +11,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.tqhit.adlib.sdk.ads.callback.RewardAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import com.tqhit.adlib.sdk.utils.Constant
 import javax.inject.Inject
@@ -19,8 +20,11 @@ import javax.inject.Singleton
 @Singleton
 class RewardHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
-    private val analyticsTracker: AnalyticsTracker
+    private val analyticsTracker: AnalyticsTracker,
+    private val remoteConfigHelper: FirebaseRemoteConfigHelper
 ) {
+    private val enableAd by lazy { remoteConfigHelper.getBoolean("rv_enable") }
+
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()
     }
@@ -32,7 +36,7 @@ class RewardHelper @Inject constructor(
         timeOutMilliSecond: Int?,
         adCallback: RewardAdCallback?
     ) {
-        if (!admobConsentHelper.canRequestAds()) {
+        if (!enableAd || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdFailedToLoad()
             return
         }
@@ -117,7 +121,7 @@ class RewardHelper @Inject constructor(
         timeOutMilliSecond: Int?,
         adCallback: RewardAdCallback?
     ) {
-        if (!admobConsentHelper.canRequestAds()) {
+        if (!enableAd || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }

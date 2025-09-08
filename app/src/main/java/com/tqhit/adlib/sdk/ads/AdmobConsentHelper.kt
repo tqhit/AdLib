@@ -36,12 +36,13 @@ class AdmobConsentHelper @Inject constructor(
 
     fun gatherConsent(
         activity: Activity,
-        consentCallback: IAdmobConsentCallback
+        consentCallback: IAdmobConsentCallback,
+        testDeviceId: String = ""
     ) {
         val debugSettings =
             ConsentDebugSettings.Builder(activity)
                 .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
-                //.addTestDeviceHashedId("6273DB7376FF67AE690BB65F855ACE64")
+                .addTestDeviceHashedId(testDeviceId)
                 .build()
 
         val params = ConsentRequestParameters.Builder().setConsentDebugSettings(debugSettings).build()
@@ -54,7 +55,6 @@ class AdmobConsentHelper @Inject constructor(
                     UserMessagingPlatform.loadAndShowConsentFormIfRequired(
                         activity
                     ) { formError ->
-                        // Consent has been gathered.
                         consentCallback.consentGatheringComplete(formError)
                     }
                     return@requestConsentInfoUpdate
