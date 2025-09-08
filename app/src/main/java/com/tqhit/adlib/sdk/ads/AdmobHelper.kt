@@ -221,6 +221,10 @@ class AdmobHelper @Inject constructor(
         appOpenHelper.setAdUnitId(adUnitId)
     }
 
+    fun loadAOA(context: Context) {
+        appOpenHelper.loadAd(context)
+    }
+
     fun showAOA(
         activity: Activity,
         adCallback: AppOpenHelper.OnShowAdCompleteListener?

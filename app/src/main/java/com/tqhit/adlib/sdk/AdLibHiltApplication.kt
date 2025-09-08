@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tqhit.adlib.sdk.adjust.AdjustAnalyticsHelper
 import com.tqhit.adlib.sdk.ads.AdmobHelper
 import com.tqhit.adlib.sdk.ads.AppOpenHelper
+import com.tqhit.adlib.sdk.ads.loader.ActivityAdLoader
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.base.AdLibBaseApplication
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
@@ -16,10 +17,10 @@ import javax.inject.Inject
 // @HiltAndroidApp
 open class AdLibHiltApplication : AdLibBaseApplication() {
     @Inject lateinit var admobHelper: AdmobHelper
-    @Inject lateinit var appOpenHelper: AppOpenHelper
     @Inject lateinit var analyticsTracker: AnalyticsTracker
     @Inject lateinit var adjustAnalyticsHelper: AdjustAnalyticsHelper
     @Inject lateinit var remoteConfigHelper: FirebaseRemoteConfigHelper
+    @Inject lateinit var activityAdLoader: ActivityAdLoader
 
     override fun onCreateExt() {
         super.onCreateExt()
@@ -42,7 +43,7 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         super.showAOA()
 
         if (currentActivity != null) {
-            appOpenHelper.showAdIfAvailable(
+            admobHelper.showAOA(
                     currentActivity!!,
                     object : AppOpenHelper.OnShowAdCompleteListener {
                         override fun onShowAdComplete() {}
@@ -55,6 +56,7 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         super.onActivityCreated(activity, savedInstanceState)
 
         analyticsTracker.logEvent("view_${activity.javaClass.simpleName.lowercase()}")
+        activityAdLoader.onActivityCreated(activity)
 
         if (activity is FragmentActivity) {
             val fm: FragmentManager = activity.supportFragmentManager
@@ -62,6 +64,7 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
                 override fun onFragmentCreated(fm: FragmentManager, f: androidx.fragment.app.Fragment, savedInstanceState: Bundle?) {
                     super.onFragmentCreated(fm, f, savedInstanceState)
                     analyticsTracker.logEvent("view_${f.javaClass.simpleName.lowercase()}")
+                    activityAdLoader.onActivityCreated(activity, f.javaClass.simpleName)
                 }
             }, true)
         }
