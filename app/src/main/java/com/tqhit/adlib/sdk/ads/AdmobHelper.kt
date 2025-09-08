@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.util.Log
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -59,6 +60,34 @@ class AdmobHelper @Inject constructor(
             }
         }
         return false
+    }
+
+    fun loadBanner(
+        activity: Activity,
+        bannerAdUnitId: String,
+        timeoutMilliSecond: Int?,
+        adCallback: BannerAdCallback?
+    ) : AdView? {
+        return bannerHelper.loadBanner(
+            activity,
+            bannerAdUnitId,
+            timeoutMilliSecond,
+            adCallback
+        )
+    }
+
+    fun loadCollapsibleBanner(
+        activity: Activity,
+        bannerAdUnitId: String,
+        timeoutMilliSecond: Int?,
+        adCallback: BannerAdCallback?
+    ) : AdView? {
+        return bannerHelper.loadCollapsibleBanner(
+            activity,
+            bannerAdUnitId,
+            timeoutMilliSecond,
+            adCallback
+        )
     }
 
     fun showCollapsibleBanner(
@@ -188,22 +217,6 @@ class AdmobHelper @Inject constructor(
             nativeAdUnitId,
             timeOutMilliSecond,
             adCallback
-        )
-    }
-
-    fun preloadNative(
-        context: Context,
-        nativeAdUnitId: String,
-        timeOutMilliSecond: Int?,
-        adCallback: NativeAdCallback?,
-        nativeLiveData: MutableLiveData<Any>
-    ) {
-        nativeHelper.preloadNative(
-            context,
-            nativeAdUnitId,
-            timeOutMilliSecond,
-            adCallback,
-            nativeLiveData
         )
     }
 

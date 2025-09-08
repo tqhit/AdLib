@@ -1,5 +1,6 @@
 package com.tqhit.adlib.sdk.ads.callback
 
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 
 open class BannerAdCallback {
@@ -11,7 +12,7 @@ open class BannerAdCallback {
 
     open fun onAdImpression() {}
 
-    open fun onAdLoaded() {}
+    open fun onAdLoaded(adView: AdView) {}
 
     open fun onAdOpened() {}
 
