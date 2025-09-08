@@ -3,6 +3,7 @@ package com.tqhit.adlib.sdk
 import android.app.Activity
 import android.os.Bundle
 import androidx.annotation.XmlRes
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.tqhit.adlib.sdk.adjust.AdjustAnalyticsHelper
@@ -56,7 +57,6 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         super.onActivityCreated(activity, savedInstanceState)
 
         analyticsTracker.logEvent("view_${activity.javaClass.simpleName.lowercase()}")
-        activityAdLoader.onActivityCreated(activity)
 
         if (activity is FragmentActivity) {
             val fm: FragmentManager = activity.supportFragmentManager
@@ -64,9 +64,19 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
                 override fun onFragmentCreated(fm: FragmentManager, f: androidx.fragment.app.Fragment, savedInstanceState: Bundle?) {
                     super.onFragmentCreated(fm, f, savedInstanceState)
                     analyticsTracker.logEvent("view_${f.javaClass.simpleName.lowercase()}")
-                    activityAdLoader.onActivityCreated(activity, f.javaClass.simpleName)
+                }
+
+                override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+                    super.onFragmentResumed(fm, f)
+                    activityAdLoader.onActivityResumed(activity, f.javaClass.simpleName)
                 }
             }, true)
         }
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        super.onActivityResumed(activity)
+
+        activityAdLoader.onActivityResumed(activity)
     }
 }

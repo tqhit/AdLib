@@ -50,7 +50,7 @@ class ActivityAdLoader @Inject constructor(
         const val RC_ENABLE_ACTIVITY_AD_LOADER = "enable_activity_ad_loader"
     }
 
-    fun onActivityCreated(activity: Activity, fragmentName: String? = null) {
+    fun onActivityResumed(activity: Activity, fragmentName: String? = null) {
         if (remoteConfigHelper.getBoolean(RC_ENABLE_ACTIVITY_AD_LOADER).not()) {
             Log.d(TAG, "ActivityAdLoader is disabled via remote config.")
             return
@@ -59,7 +59,7 @@ class ActivityAdLoader @Inject constructor(
         val activityKeyBase = activity.javaClass.simpleName + (fragmentName?.let { "_$it" } ?: "")
         val remoteConfigKeyForActivity = "${PRELOAD_PREFIX}${activityKeyBase}" // e.g., PRELOAD_MainActivity
 
-        Log.d(TAG, "onActivityCreated for: $activityKeyBase")
+        Log.d(TAG, "onActivityResumed for: $activityKeyBase")
 
         val adIdentifiersString = remoteConfigHelper.getString(remoteConfigKeyForActivity)
 
