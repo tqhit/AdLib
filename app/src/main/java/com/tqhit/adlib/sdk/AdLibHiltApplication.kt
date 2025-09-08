@@ -25,8 +25,8 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         super.onCreateExt()
     }
 
-    open fun initAdmob(testDeviceIds: List<String>? = null) {
-        admobHelper.initAdmob(testDeviceIds)
+    open fun initAdmob(onComplete: () -> Unit, testDeviceIds: List<String>? = null) {
+        admobHelper.initAdmob(onComplete, testDeviceIds)
     }
 
     fun initRemoteConfig(@XmlRes defaultConfig: Int,
