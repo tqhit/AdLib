@@ -11,6 +11,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.tqhit.adlib.sdk.ads.callback.RewardAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import com.tqhit.adlib.sdk.utils.Constant
@@ -21,9 +22,13 @@ import javax.inject.Singleton
 class RewardHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
-    private val remoteConfigHelper: FirebaseRemoteConfigHelper
+    private val remoteConfigHelper: FirebaseRemoteConfigHelper,
+    private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy { remoteConfigHelper.getBoolean("rv_enable") }
+    private val enableAd by lazy {
+        remoteConfigHelper.getBoolean("rv_enable")
+                && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
+    }
 
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()

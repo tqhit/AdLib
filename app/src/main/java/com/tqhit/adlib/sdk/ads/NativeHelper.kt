@@ -19,6 +19,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.tqhit.adlib.R
 import com.tqhit.adlib.sdk.ads.callback.NativeAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.utils.Constant
 import javax.inject.Inject
@@ -28,9 +29,13 @@ import javax.inject.Singleton
 class NativeHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
-    private val remoteConfigHelper: FirebaseRemoteConfigHelper
+    private val remoteConfigHelper: FirebaseRemoteConfigHelper,
+    private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy { remoteConfigHelper.getBoolean("nt_enable") }
+    private val enableAd by lazy {
+        remoteConfigHelper.getBoolean("nt_enable")
+                && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
+    }
 
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()

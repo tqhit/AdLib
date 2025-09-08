@@ -9,6 +9,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.utils.Constant
 import java.util.Date
@@ -19,9 +20,13 @@ import javax.inject.Singleton
 class AppOpenHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
-    private val remoteConfigHelper: FirebaseRemoteConfigHelper
+    private val remoteConfigHelper: FirebaseRemoteConfigHelper,
+    private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy { remoteConfigHelper.getBoolean("aoa_enable") }
+    private val enableAd by lazy {
+        remoteConfigHelper.getBoolean("aoa_enable")
+                && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
+    }
     private var loadTime: Long = 0
     private var adUnitId = ""
     private var appOpenAd: AppOpenAd? = null

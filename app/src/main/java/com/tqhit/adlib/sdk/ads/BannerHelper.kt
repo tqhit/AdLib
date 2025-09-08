@@ -14,6 +14,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
 import com.tqhit.adlib.sdk.ads.callback.BannerAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.utils.Constant
 import java.util.UUID
@@ -24,9 +25,13 @@ import javax.inject.Singleton
 class BannerHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
-    private val remoteConfigHelper: FirebaseRemoteConfigHelper
+    private val remoteConfigHelper: FirebaseRemoteConfigHelper,
+    private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy { remoteConfigHelper.getBoolean("bn_enable") }
+    private val enableAd by lazy {
+        remoteConfigHelper.getBoolean("bn_enable")
+                && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
+    }
 
     private fun getCollapsibleAdRequest(timeout: Int = 60000): AdRequest {
         val builder = AdRequest.Builder().setHttpTimeoutMillis(timeout)

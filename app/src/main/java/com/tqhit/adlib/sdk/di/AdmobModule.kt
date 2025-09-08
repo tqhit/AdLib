@@ -1,6 +1,5 @@
 package com.tqhit.adlib.sdk.di
 
-import android.app.Activity
 import android.content.Context
 import com.tqhit.adlib.sdk.ads.AdmobConsentHelper
 import com.tqhit.adlib.sdk.ads.AdmobHelper
@@ -10,6 +9,7 @@ import com.tqhit.adlib.sdk.ads.InterstitialHelper
 import com.tqhit.adlib.sdk.ads.NativeHelper
 import com.tqhit.adlib.sdk.ads.RewardHelper
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import dagger.Module
 import dagger.Provides
@@ -46,9 +46,10 @@ object AdmobModule {
     fun provideBannerHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
-        remoteConfigHelper: FirebaseRemoteConfigHelper
+        remoteConfigHelper: FirebaseRemoteConfigHelper,
+        preferencesHelper: PreferencesHelper
     ): BannerHelper {
-        return BannerHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
+        return BannerHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
     }
 
     @Provides
@@ -56,9 +57,10 @@ object AdmobModule {
     fun provideInterstitialHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
-        remoteConfigHelper: FirebaseRemoteConfigHelper
+        remoteConfigHelper: FirebaseRemoteConfigHelper,
+        preferencesHelper: PreferencesHelper
     ): InterstitialHelper {
-        return InterstitialHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
+        return InterstitialHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
     }
 
     @Provides
@@ -66,9 +68,10 @@ object AdmobModule {
     fun provideNativeHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
-        remoteConfigHelper: FirebaseRemoteConfigHelper
+        remoteConfigHelper: FirebaseRemoteConfigHelper,
+        preferencesHelper: PreferencesHelper
     ): NativeHelper {
-        return NativeHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
+        return NativeHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
     }
 
     @Provides
@@ -76,9 +79,10 @@ object AdmobModule {
     fun provideRewardHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
-        remoteConfigHelper: FirebaseRemoteConfigHelper
+        remoteConfigHelper: FirebaseRemoteConfigHelper,
+        preferencesHelper: PreferencesHelper
     ): RewardHelper {
-        return RewardHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
+        return RewardHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
     }
 
     @Provides
@@ -86,8 +90,9 @@ object AdmobModule {
     fun provideAppOpenHelper(
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
-        remoteConfigHelper: FirebaseRemoteConfigHelper
+        remoteConfigHelper: FirebaseRemoteConfigHelper,
+        preferencesHelper: PreferencesHelper
     ): AppOpenHelper {
-        return AppOpenHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper)
+        return AppOpenHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
     }
 }

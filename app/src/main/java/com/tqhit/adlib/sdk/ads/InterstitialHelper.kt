@@ -10,6 +10,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.tqhit.adlib.sdk.ads.callback.InterstitialAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
+import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import com.tqhit.adlib.sdk.utils.Constant
@@ -21,9 +22,13 @@ import kotlin.getValue
 class InterstitialHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
-    private val remoteConfigHelper: FirebaseRemoteConfigHelper
+    private val remoteConfigHelper: FirebaseRemoteConfigHelper,
+    private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy { remoteConfigHelper.getBoolean("iv_enable") }
+    private val enableAd by lazy {
+        remoteConfigHelper.getBoolean("iv_enable")
+                && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
+    }
 
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()
