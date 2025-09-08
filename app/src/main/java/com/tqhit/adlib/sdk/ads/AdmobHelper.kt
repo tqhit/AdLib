@@ -34,7 +34,7 @@ class AdmobHelper @Inject constructor(
 ) {
     private val TAG : String = AdmobHelper::class.java.simpleName
 
-    fun initAdmob(testDeviceIds: List<String>? = null) {
+    fun initAdmob(onComplete: () -> Unit, testDeviceIds: List<String>? = null) {
         CoroutineScope(Dispatchers.IO).launch {
             MobileAds.setRequestConfiguration(
                 RequestConfiguration.Builder()
@@ -43,6 +43,7 @@ class AdmobHelper @Inject constructor(
             )
             MobileAds.initialize(context) { _ ->
                 Log.d(TAG, "Admob initialized")
+                onComplete()
             }
         }
     }
