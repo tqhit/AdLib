@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.edit
 
 @Singleton
 class PreferencesHelper @Inject constructor(
@@ -11,7 +12,7 @@ class PreferencesHelper @Inject constructor(
     private val gson: Gson
 ) {
     fun saveString(key: String, value: String) {
-        sharedPreferences.edit().putString(key, value).apply()
+        sharedPreferences.edit { putString(key, value) }
     }
 
     fun getString(key: String, defaultValue: String = ""): String {
@@ -19,7 +20,7 @@ class PreferencesHelper @Inject constructor(
     }
 
     fun saveInt(key: String, value: Int) {
-        sharedPreferences.edit().putInt(key, value).apply()
+        sharedPreferences.edit { putInt(key, value) }
     }
 
     fun getInt(key: String, defaultValue: Int = 0): Int {
@@ -27,7 +28,7 @@ class PreferencesHelper @Inject constructor(
     }
 
     fun saveBoolean(key: String, value: Boolean) {
-        sharedPreferences.edit().putBoolean(key, value).apply()
+        sharedPreferences.edit { putBoolean(key, value) }
     }
 
     fun getBoolean(key: String, defaultValue: Boolean = false): Boolean {
@@ -35,7 +36,7 @@ class PreferencesHelper @Inject constructor(
     }
 
     fun saveFloat(key: String, value: Float) {
-        sharedPreferences.edit().putFloat(key, value).apply()
+        sharedPreferences.edit { putFloat(key, value) }
     }
 
     fun getFloat(key: String, defaultValue: Float = 0f): Float {
@@ -43,7 +44,7 @@ class PreferencesHelper @Inject constructor(
     }
 
     fun saveLong(key: String, value: Long) {
-        sharedPreferences.edit().putLong(key, value).apply()
+        sharedPreferences.edit { putLong(key, value) }
     }
 
     fun getLong(key: String, defaultValue: Long = 0): Long {
@@ -61,6 +62,6 @@ class PreferencesHelper @Inject constructor(
     }
 
     fun clearPreferences() {
-        sharedPreferences.edit().clear().apply()
+        sharedPreferences.edit { clear() }
     }
 }

@@ -30,9 +30,8 @@ class AdjustAnalyticsHelper @Inject constructor(
         Adjust.initSdk(config)
     }
 
-    fun trackEvent(eventToken: String, revenue: Double? = null, currency: String? = "USD") {
-        val event = AdjustEvent(eventToken)
-        revenue?.let { event.setRevenue(it, currency) }
+    fun trackEvent(eventName: String) {
+        val event = AdjustEvent(eventName)
         Adjust.trackEvent(event)
     }
 

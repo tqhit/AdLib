@@ -37,7 +37,7 @@ class RewardHelper @Inject constructor(
             return
         }
 
-        analyticsTracker.trackEvent("aj_reward_load")
+        analyticsTracker.logEvent("aj_reward_load")
 
         if (rewardedAd == null) {
             val loadingAdsDialog = LoadingAdsDialog(activity)
@@ -69,7 +69,7 @@ class RewardHelper @Inject constructor(
         rewardedAd: RewardedAd,
         adCallback: RewardAdCallback?
     ) {
-        analyticsTracker.trackEvent("aj_reward_show")
+        analyticsTracker.logEvent("aj_reward_show")
         rewardedAd.apply {
             onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
                 analyticsTracker.trackRevenueEvent(
@@ -92,7 +92,7 @@ class RewardHelper @Inject constructor(
 
                 override fun onAdShowedFullScreenContent() {
                     super.onAdShowedFullScreenContent()
-                    analyticsTracker.trackEvent("aj_reward_displayed")
+                    analyticsTracker.logEvent("aj_reward_displayed")
                 }
 
                 override fun onAdImpression() {
@@ -122,7 +122,7 @@ class RewardHelper @Inject constructor(
             return
         }
 
-        analyticsTracker.trackEvent("aj_reward_load")
+        analyticsTracker.logEvent("aj_reward_load")
 
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_REWARDED_AD_UNIT_ID else rewardAdUnitId
         RewardedAd.load(activity, adUnitId, getAdRequest(timeOutMilliSecond ?: 60000), object: RewardedAdLoadCallback() {

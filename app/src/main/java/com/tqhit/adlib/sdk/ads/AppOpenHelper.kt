@@ -98,7 +98,7 @@ class AppOpenHelper @Inject constructor(
 
             override fun onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent()
-                analyticsTracker.trackEvent("aj_app_open_displayed")
+                analyticsTracker.logEvent("aj_app_open_displayed")
             }
         }
         isShowingAd = true

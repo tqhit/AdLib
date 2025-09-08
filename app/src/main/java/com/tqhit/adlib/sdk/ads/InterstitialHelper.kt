@@ -66,7 +66,7 @@ class InterstitialHelper @Inject constructor(
         interstitialAd: InterstitialAd,
         adCallback: InterstitialAdCallback?
     ) {
-        analyticsTracker.trackEvent("aj_inters_show")
+        analyticsTracker.logEvent("aj_inters_show")
         interstitialAd.apply {
             onPaidEventListener = OnPaidEventListener { adValue ->
                 analyticsTracker.trackRevenueEvent(
@@ -89,7 +89,7 @@ class InterstitialHelper @Inject constructor(
 
                 override fun onAdShowedFullScreenContent() {
                     super.onAdShowedFullScreenContent()
-                    analyticsTracker.trackEvent("aj_inters_displayed")
+                    analyticsTracker.logEvent("aj_inters_displayed")
                 }
 
                 override fun onAdClicked() {
@@ -117,7 +117,7 @@ class InterstitialHelper @Inject constructor(
             return
         }
 
-        analyticsTracker.trackEvent("aj_inters_load")
+        analyticsTracker.logEvent("aj_inters_load")
 
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_INTERSTITIAL_AD_UNIT_ID else interstitialAdUnitId
         InterstitialAd.load(activity, adUnitId, getAdRequest(timeoutMilliSecond ?: 60000), object : InterstitialAdLoadCallback() {

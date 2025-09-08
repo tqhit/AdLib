@@ -34,11 +34,11 @@ class AdmobHelper @Inject constructor(
 ) {
     private val TAG : String = AdmobHelper::class.java.simpleName
 
-    fun initAdmob() {
+    fun initAdmob(testDeviceIds: List<String>? = null) {
         CoroutineScope(Dispatchers.IO).launch {
             MobileAds.setRequestConfiguration(
                 RequestConfiguration.Builder()
-                    //.setTestDeviceIds(listOf("FDB0ED7D82BA59AC8B05C2927D8CAD83"))
+                    .setTestDeviceIds(testDeviceIds ?: listOf())
                     .build()
             )
             MobileAds.initialize(context) { _ ->

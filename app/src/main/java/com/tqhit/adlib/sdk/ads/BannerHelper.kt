@@ -56,7 +56,7 @@ class BannerHelper @Inject constructor(
             adCallback?.onAdFailedToLoad();
             return
         }
-        analyticsTracker.trackEvent("aj_banner_load")
+        analyticsTracker.logEvent("aj_banner_load")
         val adView = AdView(activity)
         val adRequest = getCollapsibleAdRequest(timeoutMilliSecond ?: 60000)
         adView.apply {
@@ -74,7 +74,7 @@ class BannerHelper @Inject constructor(
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     adCallback?.onAdLoaded()
-                    analyticsTracker.trackEvent("aj_banner_displayed")
+                    analyticsTracker.logEvent("aj_banner_displayed")
                 }
 
                 override fun onAdClicked() {
@@ -90,7 +90,7 @@ class BannerHelper @Inject constructor(
             onPaidEventListener = OnPaidEventListener { adValue ->
                 analyticsTracker.trackRevenueEvent(
                     adValue,
-                    adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
+                        adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
                     "Banner"
                 )
             }
@@ -113,7 +113,7 @@ class BannerHelper @Inject constructor(
             adCallback?.onAdFailedToLoad();
             return
         }
-        analyticsTracker.trackEvent("aj_banner_load")
+        analyticsTracker.logEvent("aj_banner_load")
         val adView = AdView(activity)
         val adRequest = getAdRequest(timeoutMilliSecond ?: 60000)
         adView.apply {
@@ -131,7 +131,7 @@ class BannerHelper @Inject constructor(
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     adCallback?.onAdLoaded()
-                    analyticsTracker.trackEvent("aj_banner_displayed")
+                    analyticsTracker.logEvent("aj_banner_displayed")
                 }
 
                 override fun onAdClicked() {

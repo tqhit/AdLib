@@ -17,18 +17,16 @@ import javax.inject.Inject
 open class AdLibHiltApplication : AdLibBaseApplication() {
     @Inject lateinit var admobHelper: AdmobHelper
     @Inject lateinit var appOpenHelper: AppOpenHelper
-    @Inject lateinit var analyticsHelper: AdjustAnalyticsHelper
     @Inject lateinit var analyticsTracker: AnalyticsTracker
+    @Inject lateinit var adjustAnalyticsHelper: AdjustAnalyticsHelper
     @Inject lateinit var remoteConfigHelper: FirebaseRemoteConfigHelper
 
     override fun onCreateExt() {
         super.onCreateExt()
-
-        initAdmob()
     }
 
-    open fun initAdmob() {
-        admobHelper.initAdmob()
+    open fun initAdmob(testDeviceIds: List<String>? = null) {
+        admobHelper.initAdmob(testDeviceIds)
     }
 
     fun initRemoteConfig(@XmlRes defaultConfig: Int,
@@ -37,7 +35,7 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
     }
 
     fun initTracker(token: String) {
-        analyticsHelper.initAdjust(token)
+        adjustAnalyticsHelper.initAdjust(token)
     }
 
     override fun showAOA() {

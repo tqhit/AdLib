@@ -43,7 +43,7 @@ class NativeHelper @Inject constructor(
             return
         }
 
-        analyticsTracker.trackEvent("aj_native_load")
+        analyticsTracker.logEvent("aj_native_load")
 
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_NATIVE_AD_UNIT_ID else nativeAdUnitId
         val videoOption = VideoOptions.Builder()
@@ -223,6 +223,6 @@ class NativeHelper @Inject constructor(
         }
 
         nativeAdView.setNativeAd(nativeAd)
-        analyticsTracker.trackEvent("aj_native_displayed")
+        analyticsTracker.logEvent("aj_native_displayed")
     }
 }

@@ -17,29 +17,21 @@ constructor(
     fun logEvent(eventName: String, params: Map<String, Any>? = null) {
         if (Constant.DEBUG_MODE) return
         firebaseAnalyticsHelper.logEvent(eventName, params)
-    }
-
-    fun trackEvent(
-            eventToken: String,
-            revenue: Double? = null,
-            currency: String? = "USD",
-    ) {
-        if (Constant.DEBUG_MODE) return
-        adjustAnalyticsHelper.trackEvent(eventToken, revenue, currency)
+        adjustAnalyticsHelper.trackEvent(eventName)
     }
 
     fun trackRevenueEvent(adValue: AdValue, adSource: String, adFormat: String) {
         if (Constant.DEBUG_MODE) return
-        adjustAnalyticsHelper.trackRevenueEvent(adValue)
         firebaseAnalyticsHelper.logEvent(
                 "ad_impression_custom",
                 mapOf(
-                        FirebaseAnalytics.Param.AD_PLATFORM to "admob mediation",
+                        FirebaseAnalytics.Param.AD_PLATFORM to "admob",
                         FirebaseAnalytics.Param.AD_SOURCE to adSource,
                         FirebaseAnalytics.Param.AD_FORMAT to adFormat,
                         FirebaseAnalytics.Param.VALUE to adValue.valueMicros.toDouble() / 1000000.0,
                         FirebaseAnalytics.Param.CURRENCY to "USD"
                 )
         )
+        adjustAnalyticsHelper.trackRevenueEvent(adValue)
     }
 }
