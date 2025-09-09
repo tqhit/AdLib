@@ -106,6 +106,16 @@ class AdmobHelper @Inject constructor(
         )
     }
 
+    fun showCollapsibleBanner(
+        adView: AdView,
+        parent: ViewGroup
+    ) {
+        bannerHelper.showCollapsibleBanner(
+            adView,
+            parent
+        )
+    }
+
     fun showBanner(
         activity: Activity,
         bannerAdUnitId: String,
@@ -119,6 +129,16 @@ class AdmobHelper @Inject constructor(
             parent,
             timeoutMilliSecond,
             adCallback
+        )
+    }
+
+    fun showBanner(
+        adView: AdView,
+        parent: ViewGroup
+    ) {
+        bannerHelper.showBanner(
+            adView,
+            parent
         )
     }
 

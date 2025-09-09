@@ -62,6 +62,15 @@ class BannerHelper @Inject constructor(
     ) {
         val adView = loadCollapsibleBanner(activity, bannerAdUnitId, timeoutMilliSecond, adCallback)
             ?: return
+        parent.removeAllViews()
+        parent.addView(adView)
+    }
+
+    fun showCollapsibleBanner(
+        adView: AdView,
+        parent: ViewGroup
+    ) {
+        parent.removeAllViews()
         parent.addView(adView)
     }
 
@@ -74,6 +83,15 @@ class BannerHelper @Inject constructor(
     ) {
         val adView = loadBanner(activity, bannerAdUnitId, timeoutMilliSecond, adCallback)
             ?: return
+        parent.removeAllViews()
+        parent.addView(adView)
+    }
+
+    fun showBanner(
+        adView: AdView,
+        parent: ViewGroup
+    ) {
+        parent.removeAllViews()
         parent.addView(adView)
     }
 
@@ -97,7 +115,7 @@ class BannerHelper @Inject constructor(
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     super.onAdFailedToLoad(loadAdError)
                     adCallback?.onAdFailedToLoad(loadAdError)
-                    analyticsTracker.logEvent("load_ad_failed", mapOf(
+                    analyticsTracker.logEvent("aj_banner_load_failed", mapOf(
                         "ad_unit_id" to bannerAdUnitId,
                         "ad_error_message" to loadAdError.message
                     ))
@@ -153,7 +171,7 @@ class BannerHelper @Inject constructor(
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     super.onAdFailedToLoad(loadAdError)
                     adCallback?.onAdFailedToLoad(loadAdError)
-                    analyticsTracker.logEvent("load_ad_failed", mapOf(
+                    analyticsTracker.logEvent("aj_banner_load_failed", mapOf(
                         "ad_unit_id" to bannerAdUnitId,
                         "ad_error_message" to loadAdError.message
                     ))

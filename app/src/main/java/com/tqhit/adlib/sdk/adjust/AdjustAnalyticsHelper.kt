@@ -16,6 +16,32 @@ import javax.inject.Singleton
 class AdjustAnalyticsHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    val coreEventNames = listOf(
+        "aj_app_open_displayed",
+        "aj_app_open_load",
+        "aj_app_open_load_failed",
+        "aj_app_open_show",
+        "aj_banner_displayed",
+        "aj_banner_load",
+        "aj_banner_load_failed",
+        "aj_inters_displayed",
+        "aj_inters_load",
+        "aj_inters_load_failed",
+        "aj_inters_show",
+        "aj_native_displayed",
+        "aj_native_load",
+        "aj_native_load_failed",
+        "aj_reward_displayed",
+        "aj_reward_load",
+        "aj_reward_load_failed",
+        "aj_reward_show"
+    )
+
+    var eventMap: Map<String, String> = mapOf()
+
+    fun setEventMap(map: Map<String, String>) {
+        eventMap = map
+    }
 
     fun initAdjust(token: String) {
         val environment = if (Constant.DEBUG_MODE) {
@@ -31,12 +57,13 @@ class AdjustAnalyticsHelper @Inject constructor(
     }
 
     fun trackEvent(eventName: String) {
-        val event = AdjustEvent(eventName)
+        val eventToken = eventMap[eventName] ?: return
+        val event = AdjustEvent(eventToken)
         Adjust.trackEvent(event)
     }
 
-    fun trackRevenueEvent(adValue: AdValue) {
-        val adjustAdRevenue = AdjustAdRevenue("admob_sdk")
+    fun trackRevenueEvent(adValue: AdValue, adjustSource: String = "admob_sdk") {
+        val adjustAdRevenue = AdjustAdRevenue(adjustSource)
         adjustAdRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
         Adjust.trackAdRevenue(adjustAdRevenue)
     }

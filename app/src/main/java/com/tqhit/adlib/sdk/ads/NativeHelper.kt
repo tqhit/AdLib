@@ -78,6 +78,7 @@ class NativeHelper @Inject constructor(
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     adCallback?.onAdFailedToLoad(adError)
+                    analyticsTracker.logEvent("aj_native_load_failed")
                 }
 
                 override fun onAdImpression() {

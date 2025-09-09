@@ -137,6 +137,7 @@ class InterstitialHelper @Inject constructor(
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 adCallback?.onAdFailedToLoad(adError)
+                analyticsTracker.logEvent("aj_inters_load_failed")
             }
         })
     }

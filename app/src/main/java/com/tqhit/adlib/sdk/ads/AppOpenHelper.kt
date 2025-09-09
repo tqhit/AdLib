@@ -47,6 +47,7 @@ class AppOpenHelper @Inject constructor(
         if (isLoadingAd || isAdAvailable()) return
         isLoadingAd = true
         val request = AdRequest.Builder().build()
+        analyticsTracker.logEvent("aj_app_open_load")
         AppOpenAd.load(
             context, if (Constant.DEBUG_MODE) Constant.ADMOB_AOA_AD_UNIT_ID else adUnitId, request,
             object : AppOpenAd.AppOpenAdLoadCallback() {
@@ -57,6 +58,7 @@ class AppOpenHelper @Inject constructor(
                 }
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     isLoadingAd = false
+                    analyticsTracker.logEvent("aj_app_open_load_failed")
                 }
             }
         )
@@ -86,6 +88,7 @@ class AppOpenHelper @Inject constructor(
             return
         }
 
+        analyticsTracker.logEvent("aj_app_open_show")
         appOpenAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 appOpenAd = null
