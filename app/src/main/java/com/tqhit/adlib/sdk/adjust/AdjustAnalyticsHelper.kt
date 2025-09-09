@@ -39,10 +39,6 @@ class AdjustAnalyticsHelper @Inject constructor(
 
     var eventMap: Map<String, String> = mapOf()
 
-    fun setEventMap(map: Map<String, String>) {
-        eventMap = map
-    }
-
     fun initAdjust(token: String) {
         val environment = if (Constant.DEBUG_MODE) {
             AdjustConfig.ENVIRONMENT_SANDBOX
