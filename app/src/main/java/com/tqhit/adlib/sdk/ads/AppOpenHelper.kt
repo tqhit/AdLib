@@ -2,11 +2,13 @@ package com.tqhit.adlib.sdk.ads
 
 import android.app.Activity
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.ads.AdActivity
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
@@ -33,6 +35,8 @@ class AppOpenHelper @Inject constructor(
     private var isLoadingAd = false
     private var isShowingAd = false
 
+    val adLoaded = MutableLiveData<Boolean>()
+
     interface OnShowAdCompleteListener {
         fun onShowAdComplete()
     }
@@ -55,10 +59,19 @@ class AppOpenHelper @Inject constructor(
                     appOpenAd = ad
                     isLoadingAd = false
                     loadTime = Date().time
+                    appOpenAd?.onPaidEventListener = OnPaidEventListener { adValue ->
+                        analyticsTracker.trackRevenueEvent(
+                            adValue,
+                            appOpenAd?.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
+                            "AOA"
+                        )
+                    }
+                    adLoaded.postValue(true)
                 }
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     isLoadingAd = false
                     analyticsTracker.logEvent("aj_app_open_load_failed")
+                    adLoaded.postValue(false)
                 }
             }
         )
@@ -93,6 +106,7 @@ class AppOpenHelper @Inject constructor(
             override fun onAdDismissedFullScreenContent() {
                 appOpenAd = null
                 isShowingAd = false
+                adLoaded.postValue(false)
                 adCallback.onShowAdComplete()
                 loadAd(activity)
             }
@@ -100,6 +114,7 @@ class AppOpenHelper @Inject constructor(
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                 appOpenAd = null
                 isShowingAd = false
+                adLoaded.postValue(false)
                 adCallback.onShowAdComplete()
                 loadAd(activity)
             }
