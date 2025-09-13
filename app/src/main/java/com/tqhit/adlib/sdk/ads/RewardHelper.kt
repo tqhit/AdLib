@@ -1,6 +1,7 @@
 package com.tqhit.adlib.sdk.ads
 
 import android.app.Activity
+import android.content.Context
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdValue
@@ -119,7 +120,7 @@ class RewardHelper @Inject constructor(
     }
 
     fun loadReward(
-        activity: Activity,
+        context: Context,
         rewardAdUnitId: String,
         timeOutMilliSecond: Int?,
         adCallback: RewardAdCallback?
@@ -132,7 +133,7 @@ class RewardHelper @Inject constructor(
         analyticsTracker.logEvent("aj_reward_load")
 
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_REWARDED_AD_UNIT_ID else rewardAdUnitId
-        RewardedAd.load(activity, adUnitId, getAdRequest(timeOutMilliSecond ?: 60000), object: RewardedAdLoadCallback() {
+        RewardedAd.load(context, adUnitId, getAdRequest(timeOutMilliSecond ?: 60000), object: RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 adCallback?.onAdFailedToLoad(adError)
                 analyticsTracker.logEvent("aj_reward_load_failed")

@@ -1,6 +1,7 @@
 package com.tqhit.adlib.sdk.ads
 
 import android.app.Activity
+import android.content.Context
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -117,7 +118,7 @@ class InterstitialHelper @Inject constructor(
     }
 
     fun loadInterstitial(
-        activity: Activity,
+        context: Context,
         interstitialAdUnitId: String,
         timeoutMilliSecond: Int?,
         adCallback: InterstitialAdCallback?
@@ -130,7 +131,7 @@ class InterstitialHelper @Inject constructor(
         analyticsTracker.logEvent("aj_inters_load")
 
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_INTERSTITIAL_AD_UNIT_ID else interstitialAdUnitId
-        InterstitialAd.load(activity, adUnitId, getAdRequest(timeoutMilliSecond ?: 60000), object : InterstitialAdLoadCallback() {
+        InterstitialAd.load(context, adUnitId, getAdRequest(timeoutMilliSecond ?: 60000), object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 adCallback?.onAdLoaded(interstitialAd)
             }
