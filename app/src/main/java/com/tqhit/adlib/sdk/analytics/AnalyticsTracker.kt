@@ -65,7 +65,11 @@ constructor(
             )
 
             // https://dev.adjust.com/en/sdk/android/features/ad-revenue/
-            adjustAnalyticsHelper.trackRevenueEvent(impressionData.revenue, "applovin_max_sdk")
+            adjustAnalyticsHelper.trackRevenueEvent(
+                impressionData.revenue,
+                "USD",
+                "applovin_max_sdk"
+            )
 
             // https://firebase.google.com/docs/analytics/measure-ad-revenue#implementation-other-platforms
             firebaseAnalyticsHelper.logEvent(
