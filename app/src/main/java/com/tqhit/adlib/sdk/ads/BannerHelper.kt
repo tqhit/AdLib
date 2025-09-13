@@ -115,7 +115,7 @@ class BannerHelper @Inject constructor(
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     super.onAdFailedToLoad(loadAdError)
                     adCallback?.onAdFailedToLoad(loadAdError)
-                    analyticsTracker.logEvent("aj_banner_load_failed", mapOf(
+                    analyticsTracker.logEvent("aj_banner_load_fail", mapOf(
                         "ad_unit_id" to bannerAdUnitId,
                         "ad_error_message" to loadAdError.message
                     ))
@@ -124,17 +124,30 @@ class BannerHelper @Inject constructor(
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     adCallback?.onAdLoaded(this@apply)
-                    analyticsTracker.logEvent("aj_banner_displayed")
+                    analyticsTracker.logEvent("aj_banner_load_success")
+                }
+
+                override fun onAdClosed() {
+                    super.onAdClosed()
+                    adCallback?.onAdClosed()
+                    analyticsTracker.logEvent("aj_banner_close")
                 }
 
                 override fun onAdClicked() {
                     super.onAdClicked()
                     adCallback?.onAdClicked()
+                    analyticsTracker.logEvent("aj_banner_click")
                 }
+
 
                 override fun onAdImpression() {
                     super.onAdImpression()
                     adCallback?.onAdImpression()
+                }
+
+                override fun onAdOpened() {
+                    super.onAdOpened()
+                    analyticsTracker.logEvent("aj_banner_show_success")
                 }
             }
             onPaidEventListener = OnPaidEventListener { adValue ->
@@ -172,7 +185,7 @@ class BannerHelper @Inject constructor(
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     super.onAdFailedToLoad(loadAdError)
                     adCallback?.onAdFailedToLoad(loadAdError)
-                    analyticsTracker.logEvent("aj_banner_load_failed", mapOf(
+                    analyticsTracker.logEvent("aj_banner_load_fail", mapOf(
                         "ad_unit_id" to bannerAdUnitId,
                         "ad_error_message" to loadAdError.message
                     ))
@@ -181,17 +194,29 @@ class BannerHelper @Inject constructor(
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     adCallback?.onAdLoaded(this@apply)
-                    analyticsTracker.logEvent("aj_banner_displayed")
+                    analyticsTracker.logEvent("aj_banner_load_success")
+                }
+
+                override fun onAdClosed() {
+                    super.onAdClosed()
+                    adCallback?.onAdClosed()
+                    analyticsTracker.logEvent("aj_banner_close")
                 }
 
                 override fun onAdClicked() {
                     super.onAdClicked()
                     adCallback?.onAdClicked()
+                    analyticsTracker.logEvent("aj_banner_click")
                 }
 
                 override fun onAdImpression() {
                     super.onAdImpression()
                     adCallback?.onAdImpression()
+                }
+
+                override fun onAdOpened() {
+                    super.onAdOpened()
+                    analyticsTracker.logEvent("aj_banner_show_success")
                 }
             }
             onPaidEventListener = OnPaidEventListener { adValue ->

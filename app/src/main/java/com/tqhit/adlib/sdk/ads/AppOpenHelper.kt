@@ -56,6 +56,8 @@ class AppOpenHelper @Inject constructor(
             context, if (Constant.DEBUG_MODE) Constant.ADMOB_AOA_AD_UNIT_ID else adUnitId, request,
             object : AppOpenAd.AppOpenAdLoadCallback() {
                 override fun onAdLoaded(ad: AppOpenAd) {
+                    super.onAdLoaded(ad)
+                    analyticsTracker.logEvent("aj_app_open_load_success")
                     appOpenAd = ad
                     isLoadingAd = false
                     loadTime = Date().time
@@ -70,8 +72,9 @@ class AppOpenHelper @Inject constructor(
                     adLoaded.postValue(true)
                 }
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    super.onAdFailedToLoad(loadAdError)
+                    analyticsTracker.logEvent("aj_app_open_load_fail")
                     isLoadingAd = false
-                    analyticsTracker.logEvent("aj_app_open_load_failed")
                     adLoaded.postValue(false)
                 }
             }
@@ -105,6 +108,8 @@ class AppOpenHelper @Inject constructor(
         analyticsTracker.logEvent("aj_app_open_show")
         appOpenAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent()
+                analyticsTracker.logEvent("aj_app_open_close")
                 appOpenAd = null
                 isShowingAd = false
                 adLoaded.postValue(false)
@@ -113,6 +118,8 @@ class AppOpenHelper @Inject constructor(
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                super.onAdFailedToShowFullScreenContent(adError)
+                analyticsTracker.logEvent("aj_app_open_show_fail")
                 appOpenAd = null
                 isShowingAd = false
                 adLoaded.postValue(false)
@@ -122,7 +129,12 @@ class AppOpenHelper @Inject constructor(
 
             override fun onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent()
-                analyticsTracker.logEvent("aj_app_open_displayed")
+                analyticsTracker.logEvent("aj_app_open_show_success")
+            }
+
+            override fun onAdClicked() {
+                super.onAdClicked()
+                analyticsTracker.logEvent("aj_app_open_click")
             }
         }
         isShowingAd = true

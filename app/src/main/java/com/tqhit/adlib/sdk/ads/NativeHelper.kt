@@ -75,11 +75,12 @@ class NativeHelper @Inject constructor(
                     }
                 }
                 adCallback?.onAdLoaded(nativeAd)
+                analyticsTracker.logEvent("aj_native_load_success")
             }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     adCallback?.onAdFailedToLoad(adError)
-                    analyticsTracker.logEvent("aj_native_load_failed")
+                    analyticsTracker.logEvent("aj_native_load_fail")
                 }
 
                 override fun onAdImpression() {
@@ -87,9 +88,16 @@ class NativeHelper @Inject constructor(
                     adCallback?.onAdImpression()
                 }
 
+                override fun onAdClosed() {
+                    super.onAdClosed()
+                    adCallback?.onAdClosed()
+                    analyticsTracker.logEvent("aj_native_close")
+                }
+
                 override fun onAdClicked() {
                     super.onAdClicked()
                     adCallback?.onAdClicked()
+                    analyticsTracker.logEvent("aj_native_click")
                 }
             })
             .withNativeAdOptions(adOptions)
@@ -181,6 +189,6 @@ class NativeHelper @Inject constructor(
         }
 
         nativeAdView.setNativeAd(nativeAd)
-        analyticsTracker.logEvent("aj_native_displayed")
+        analyticsTracker.logEvent("aj_native_show_success")
     }
 }

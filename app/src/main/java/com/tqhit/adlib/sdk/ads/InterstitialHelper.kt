@@ -92,21 +92,24 @@ class InterstitialHelper @Inject constructor(
                 override fun onAdDismissedFullScreenContent() {
                     super.onAdDismissedFullScreenContent()
                     adCallback?.onAdClosed()
+                    analyticsTracker.logEvent("aj_inters_close")
                 }
 
                 override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                     super.onAdFailedToShowFullScreenContent(p0)
                     adCallback?.onAdClosed()
+                    analyticsTracker.logEvent("aj_inters_show_fail")
                 }
 
                 override fun onAdShowedFullScreenContent() {
                     super.onAdShowedFullScreenContent()
-                    analyticsTracker.logEvent("aj_inters_displayed")
+                    analyticsTracker.logEvent("aj_inters_show_success")
                 }
 
                 override fun onAdClicked() {
                     super.onAdClicked()
                     adCallback?.onAdClicked()
+                    analyticsTracker.logEvent("aj_inters_click")
                 }
 
                 override fun onAdImpression() {
@@ -135,11 +138,12 @@ class InterstitialHelper @Inject constructor(
         InterstitialAd.load(context, adUnitId, getAdRequest(timeoutMilliSecond ?: 60000), object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
                 adCallback?.onAdLoaded(interstitialAd)
+                analyticsTracker.logEvent("aj_inters_load_success")
             }
 
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 adCallback?.onAdFailedToLoad(adError)
-                analyticsTracker.logEvent("aj_inters_load_failed")
+                analyticsTracker.logEvent("aj_inters_load_fail")
             }
         })
     }

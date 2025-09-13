@@ -92,16 +92,18 @@ class RewardHelper @Inject constructor(
                 override fun onAdDismissedFullScreenContent() {
                     super.onAdDismissedFullScreenContent()
                     adCallback?.onAdClosed()
+                    analyticsTracker.logEvent("aj_reward_close")
                 }
 
                 override fun onAdFailedToShowFullScreenContent(var0: AdError) {
                     super.onAdFailedToShowFullScreenContent(var0)
                     adCallback?.onAdFailedToShowFullScreenContent(var0)
+                    analyticsTracker.logEvent("aj_reward_show_fail")
                 }
 
                 override fun onAdShowedFullScreenContent() {
                     super.onAdShowedFullScreenContent()
-                    analyticsTracker.logEvent("aj_reward_displayed")
+                    analyticsTracker.logEvent("aj_reward_show_success")
                 }
 
                 override fun onAdImpression() {
@@ -112,6 +114,7 @@ class RewardHelper @Inject constructor(
                 override fun onAdClicked() {
                     super.onAdClicked()
                     adCallback?.onAdClicked()
+                    analyticsTracker.logEvent("aj_reward_click")
                 }
             }
         }
@@ -136,11 +139,12 @@ class RewardHelper @Inject constructor(
         val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_REWARDED_AD_UNIT_ID else rewardAdUnitId
         RewardedAd.load(context, adUnitId, getAdRequest(timeOutMilliSecond ?: 60000), object: RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
+                analyticsTracker.logEvent("aj_reward_load_fail")
                 adCallback?.onAdFailedToLoad(adError)
-                analyticsTracker.logEvent("aj_reward_load_failed")
             }
 
             override fun onAdLoaded(rewardedAd: RewardedAd) {
+                analyticsTracker.logEvent("aj_reward_load_success")
                 adCallback?.onAdLoaded(rewardedAd)
             }
         })
