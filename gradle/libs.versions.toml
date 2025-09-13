@@ -1,6 +1,7 @@
 [versions]
 adjustAndroid = "5.1.0"
 agp = "8.8.0"
+applovinSdk = "13.4.0"
 customactivityoncrash = "2.4.0"
 gson = "2.12.1"
 hiltAndroid = "2.55"
@@ -32,6 +33,7 @@ playServicesAds = "23.6.0"
 adjust-android = { module = "com.adjust.sdk:adjust-android", version.ref = "adjustAndroid" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
+applovin-sdk = { module = "com.applovin:applovin-sdk", version.ref = "applovinSdk" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

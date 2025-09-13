@@ -138,8 +138,9 @@ class BannerHelper @Inject constructor(
                 }
             }
             onPaidEventListener = OnPaidEventListener { adValue ->
-                analyticsTracker.trackRevenueEvent(
+                analyticsTracker.trackAdMobRevenueEvent(
                     adValue,
+                    adView.adUnitId,
                     adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
                     "Banner"
                 )
@@ -194,8 +195,9 @@ class BannerHelper @Inject constructor(
                 }
             }
             onPaidEventListener = OnPaidEventListener { adValue ->
-                analyticsTracker.trackRevenueEvent(
+                analyticsTracker.trackAdMobRevenueEvent(
                     adValue,
+                    adView.adUnitId,
                         adView.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
                     "Banner"
                 )

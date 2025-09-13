@@ -58,9 +58,9 @@ class AdjustAnalyticsHelper @Inject constructor(
         Adjust.trackEvent(event)
     }
 
-    fun trackRevenueEvent(adValue: AdValue, adjustSource: String = "admob_sdk") {
+    fun trackRevenueEvent(value: Double, currency: String, adjustSource: String = "admob_sdk") {
         val adjustAdRevenue = AdjustAdRevenue(adjustSource)
-        adjustAdRevenue.setRevenue(adValue.valueMicros / 1000000.0, adValue.currencyCode)
+        adjustAdRevenue.setRevenue(value, currency)
         Adjust.trackAdRevenue(adjustAdRevenue)
     }
 }

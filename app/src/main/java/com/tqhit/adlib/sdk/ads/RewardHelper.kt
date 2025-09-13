@@ -80,8 +80,9 @@ class RewardHelper @Inject constructor(
         analyticsTracker.logEvent("aj_reward_show")
         rewardedAd.apply {
             onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
-                analyticsTracker.trackRevenueEvent(
+                analyticsTracker.trackAdMobRevenueEvent(
                     adValue,
+                    rewardedAd.adUnitId,
                     rewardedAd.responseInfo.loadedAdapterResponseInfo?.adSourceName
                         ?: "AdMob",
                     "Reward"

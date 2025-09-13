@@ -65,8 +65,9 @@ class NativeHelper @Inject constructor(
             .forNativeAd { nativeAd ->
                 nativeAd.apply {
                     setOnPaidEventListener { adValue: AdValue ->
-                        analyticsTracker.trackRevenueEvent(
+                        analyticsTracker.trackAdMobRevenueEvent(
                             adValue,
+                            adUnitId,
                             nativeAd.responseInfo?.loadedAdapterResponseInfo?.adSourceName
                                 ?: "AdMob",
                             "Native"

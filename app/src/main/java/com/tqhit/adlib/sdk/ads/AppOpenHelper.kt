@@ -60,8 +60,9 @@ class AppOpenHelper @Inject constructor(
                     isLoadingAd = false
                     loadTime = Date().time
                     appOpenAd?.onPaidEventListener = OnPaidEventListener { adValue ->
-                        analyticsTracker.trackRevenueEvent(
+                        analyticsTracker.trackAdMobRevenueEvent(
                             adValue,
+                            ad.adUnitId,
                             appOpenAd?.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
                             "AOA"
                         )

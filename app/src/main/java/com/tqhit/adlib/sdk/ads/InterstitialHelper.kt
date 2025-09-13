@@ -80,8 +80,9 @@ class InterstitialHelper @Inject constructor(
         analyticsTracker.logEvent("aj_inters_show")
         interstitialAd.apply {
             onPaidEventListener = OnPaidEventListener { adValue ->
-                analyticsTracker.trackRevenueEvent(
+                analyticsTracker.trackAdMobRevenueEvent(
                     adValue,
+                    interstitialAd.adUnitId,
                     interstitialAd.responseInfo.loadedAdapterResponseInfo?.adSourceName
                         ?: "AdMob",
                     "Interstitial"

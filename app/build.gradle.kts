@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.ssp.android)
     implementation(libs.sdp.android)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.applovin.sdk)
 }
 
 kapt {
