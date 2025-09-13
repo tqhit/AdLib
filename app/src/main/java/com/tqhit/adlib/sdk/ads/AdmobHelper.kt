@@ -143,13 +143,13 @@ class AdmobHelper @Inject constructor(
     }
 
     fun loadInterstitial(
-        activity: Activity,
+        context: Context,
         interstitialAdUnitId: String,
         timeoutMilliSecond: Int?,
         adCallback: InterstitialAdCallback?
     ) {
         interstitialHelper.loadInterstitial(
-            activity,
+            context,
             interstitialAdUnitId,
             timeoutMilliSecond,
             adCallback
@@ -185,13 +185,13 @@ class AdmobHelper @Inject constructor(
     }
 
     fun loadReward(
-        activity: Activity,
+        context: Context,
         rewardAdUnitId: String,
         timeOutMilliSecond: Int?,
         adCallback: RewardAdCallback?
     ) {
         rewardHelper.loadReward(
-            activity,
+            context,
             rewardAdUnitId,
             timeOutMilliSecond,
             adCallback
