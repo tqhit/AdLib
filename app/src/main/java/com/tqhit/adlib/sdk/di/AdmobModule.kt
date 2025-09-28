@@ -1,13 +1,13 @@
 package com.tqhit.adlib.sdk.di
 
 import android.content.Context
-import com.tqhit.adlib.sdk.ads.AdmobConsentHelper
-import com.tqhit.adlib.sdk.ads.AdmobHelper
-import com.tqhit.adlib.sdk.ads.AppOpenHelper
-import com.tqhit.adlib.sdk.ads.BannerHelper
-import com.tqhit.adlib.sdk.ads.InterstitialHelper
-import com.tqhit.adlib.sdk.ads.NativeHelper
-import com.tqhit.adlib.sdk.ads.RewardHelper
+import com.tqhit.adlib.sdk.ads.admob.AdmobConsentHelper
+import com.tqhit.adlib.sdk.ads.admob.AdmobHelper
+import com.tqhit.adlib.sdk.ads.admob.AppOpenHelper
+import com.tqhit.adlib.sdk.ads.admob.BannerHelper
+import com.tqhit.adlib.sdk.ads.admob.InterstitialHelper
+import com.tqhit.adlib.sdk.ads.admob.NativeHelper
+import com.tqhit.adlib.sdk.ads.admob.RewardHelper
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper

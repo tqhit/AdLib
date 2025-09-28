@@ -14,7 +14,7 @@ import com.applovin.mediation.ads.MaxInterstitialAd
 import com.applovin.mediation.ads.MaxRewardedAd
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
-import com.tqhit.adlib.sdk.ads.AdmobHelper
+import com.tqhit.adlib.sdk.ads.admob.AdmobHelper
 import com.tqhit.adlib.sdk.ads.callback.BannerAdCallback
 import com.tqhit.adlib.sdk.ads.callback.InterstitialAdCallback
 import com.tqhit.adlib.sdk.ads.callback.NativeAdCallback
@@ -106,7 +106,7 @@ class ActivityAdLoader @Inject constructor(
      * Parse JSON configuration for a specific ad key from Remote Config
      * Expected JSON format: {"useMax": true/false, "customId": "optional_custom_id"}
      */
-    private fun getAdConfig(adKey: String): AdConfig? {
+    fun getAdConfig(adKey: String): AdConfig? {
         return try {
             val jsonString = remoteConfigHelper.getString(adKey)
             if (jsonString.isBlank()) {
@@ -116,7 +116,12 @@ class ActivityAdLoader @Inject constructor(
             
             val json = JSONObject(jsonString)
             val useMax = json.optBoolean("useMax", false)
-            val customId = json.optString("customId", null).takeIf { it.isNotBlank() }
+            val customId = try {
+                val id = json.getString("customId")
+                if (id.isNotBlank()) id else null
+            } catch (e: Exception) {
+                null
+            }
             
             Log.d(TAG, "Parsed ad config for $adKey: useMax=$useMax, customId=$customId")
             AdConfig(useMax, customId)

@@ -1,16 +1,15 @@
-package com.tqhit.adlib.sdk.ads
+package com.tqhit.adlib.sdk.ads.admob
 
 import android.app.Activity
 import android.content.Context
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.tqhit.adlib.sdk.ads.callback.RewardAdCallback
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.tqhit.adlib.sdk.ads.callback.InterstitialAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
@@ -18,16 +17,17 @@ import com.tqhit.adlib.sdk.ui.dialog.LoadingAdsDialog
 import com.tqhit.adlib.sdk.utils.Constant
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.getValue
 
 @Singleton
-class RewardHelper @Inject constructor(
+class InterstitialHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
     private val preferencesHelper: PreferencesHelper
 ) {
     private val enableAd by lazy {
-        remoteConfigHelper.getBoolean("rv_enable")
+        remoteConfigHelper.getBoolean("iv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
 
@@ -35,25 +35,24 @@ class RewardHelper @Inject constructor(
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()
     }
 
-    fun showReward(
+    fun showInterstitial(
         activity: Activity,
-        rewardAdUnitId: String,
-        rewardedAd: RewardedAd?,
-        timeOutMilliSecond: Int?,
-        adCallback: RewardAdCallback?
+        interstitialAdUnitId: String,
+        interstitialAd: InterstitialAd?,
+        timeoutMilliSecond: Int?,
+        adCallback: InterstitialAdCallback?
     ) {
         if (!enableAd || !admobConsentHelper.canRequestAds()) {
-            adCallback?.onAdFailedToLoad()
+            adCallback?.onAdClosed()
             return
         }
-
-        if (rewardedAd == null) {
+        if (interstitialAd == null) {
             val loadingAdsDialog = LoadingAdsDialog(activity)
             if (!activity.isFinishing && !activity.isDestroyed)
                 loadingAdsDialog.show()
-            loadReward(activity, rewardAdUnitId, timeOutMilliSecond, object : RewardAdCallback() {
-                override fun onAdLoaded(rewardedAd: RewardedAd) {
-                    showReward(activity, rewardedAd, adCallback)
+            loadInterstitial(activity, interstitialAdUnitId, timeoutMilliSecond, object : InterstitialAdCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    showInterstitial(activity, interstitialAd, adCallback)
                     if (loadingAdsDialog.isShowing) {
                         loadingAdsDialog.dismiss()
                     }
@@ -61,6 +60,7 @@ class RewardHelper @Inject constructor(
 
                 override fun onAdFailedToLoad(adError: LoadAdError?) {
                     adCallback?.onAdFailedToLoad(adError)
+                    adCallback?.onAdClosed()
                     if (loadingAdsDialog.isShowing) {
                         loadingAdsDialog.dismiss()
                     }
@@ -68,84 +68,82 @@ class RewardHelper @Inject constructor(
             })
         }
         else {
-            showReward(activity, rewardedAd, adCallback)
+            showInterstitial(activity, interstitialAd, adCallback)
         }
     }
 
-    fun showReward(
+    fun showInterstitial(
         activity: Activity,
-        rewardedAd: RewardedAd,
-        adCallback: RewardAdCallback?
+        interstitialAd: InterstitialAd,
+        adCallback: InterstitialAdCallback?
     ) {
-        analyticsTracker.logEvent("aj_reward_show")
-        rewardedAd.apply {
-            onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
+        analyticsTracker.logEvent("aj_inters_show")
+        interstitialAd.apply {
+            onPaidEventListener = OnPaidEventListener { adValue ->
                 analyticsTracker.trackAdMobRevenueEvent(
                     adValue,
-                    rewardedAd.adUnitId,
-                    rewardedAd.responseInfo.loadedAdapterResponseInfo?.adSourceName
+                    interstitialAd.adUnitId,
+                    interstitialAd.responseInfo.loadedAdapterResponseInfo?.adSourceName
                         ?: "AdMob",
-                    "Reward"
+                    "Interstitial"
                 )
             }
             fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     super.onAdDismissedFullScreenContent()
                     adCallback?.onAdClosed()
-                    analyticsTracker.logEvent("aj_reward_close")
+                    analyticsTracker.logEvent("aj_inters_close")
                 }
 
-                override fun onAdFailedToShowFullScreenContent(var0: AdError) {
-                    super.onAdFailedToShowFullScreenContent(var0)
-                    adCallback?.onAdFailedToShowFullScreenContent(var0)
-                    analyticsTracker.logEvent("aj_reward_show_fail")
+                override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                    super.onAdFailedToShowFullScreenContent(p0)
+                    adCallback?.onAdClosed()
+                    analyticsTracker.logEvent("aj_inters_show_fail")
                 }
 
                 override fun onAdShowedFullScreenContent() {
                     super.onAdShowedFullScreenContent()
-                    analyticsTracker.logEvent("aj_reward_show_success")
+                    analyticsTracker.logEvent("aj_inters_show_success")
+                }
+
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    adCallback?.onAdClicked()
+                    analyticsTracker.logEvent("aj_inters_click")
                 }
 
                 override fun onAdImpression() {
                     super.onAdImpression()
                     adCallback?.onAdImpression()
                 }
-
-                override fun onAdClicked() {
-                    super.onAdClicked()
-                    adCallback?.onAdClicked()
-                    analyticsTracker.logEvent("aj_reward_click")
-                }
             }
         }
-        rewardedAd.show(activity, { rewardItem ->
-            adCallback?.onUserEarnedReward(rewardItem)
-        })
+        interstitialAd.show(activity)
     }
 
-    fun loadReward(
+    fun loadInterstitial(
         context: Context,
-        rewardAdUnitId: String,
-        timeOutMilliSecond: Int?,
-        adCallback: RewardAdCallback?
+        interstitialAdUnitId: String,
+        timeoutMilliSecond: Int?,
+        adCallback: InterstitialAdCallback?
     ) {
         if (!enableAd || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }
 
-        analyticsTracker.logEvent("aj_reward_load")
+        analyticsTracker.logEvent("aj_inters_load")
 
-        val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_REWARDED_AD_UNIT_ID else rewardAdUnitId
-        RewardedAd.load(context, adUnitId, getAdRequest(timeOutMilliSecond ?: 60000), object: RewardedAdLoadCallback() {
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                analyticsTracker.logEvent("aj_reward_load_fail")
-                adCallback?.onAdFailedToLoad(adError)
+        val adUnitId = if (Constant.DEBUG_MODE) Constant.ADMOB_INTERSTITIAL_AD_UNIT_ID else interstitialAdUnitId
+        InterstitialAd.load(context, adUnitId, getAdRequest(timeoutMilliSecond ?: 60000), object : InterstitialAdLoadCallback() {
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                adCallback?.onAdLoaded(interstitialAd)
+                analyticsTracker.logEvent("aj_inters_load_success")
             }
 
-            override fun onAdLoaded(rewardedAd: RewardedAd) {
-                analyticsTracker.logEvent("aj_reward_load_success")
-                adCallback?.onAdLoaded(rewardedAd)
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                adCallback?.onAdFailedToLoad(adError)
+                analyticsTracker.logEvent("aj_inters_load_fail")
             }
         })
     }

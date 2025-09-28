@@ -1,4 +1,4 @@
-package com.tqhit.adlib.sdk.ads
+package com.tqhit.adlib.sdk.ads.admob
 
 import android.app.Activity
 import android.content.Context

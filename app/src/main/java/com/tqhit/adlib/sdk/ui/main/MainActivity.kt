@@ -4,9 +4,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.google.android.ump.FormError
-import com.tqhit.adlib.R
 import com.tqhit.adlib.databinding.ActivityMainBinding
-import com.tqhit.adlib.sdk.ads.AdmobConsentHelper
+import com.tqhit.adlib.sdk.ads.admob.AdmobConsentHelper
 import com.tqhit.adlib.sdk.ads.callback.IAdmobConsentCallback
 import com.tqhit.adlib.sdk.base.ui.AdLibBaseActivity
 import dagger.hilt.android.AndroidEntryPoint

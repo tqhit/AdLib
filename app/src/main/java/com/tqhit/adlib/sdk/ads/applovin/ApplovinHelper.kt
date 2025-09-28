@@ -26,7 +26,7 @@ class ApplovinHelper @Inject constructor(
     private val maxNativeHelper: MaxNativeHelper,
     private val maxAppOpenHelper: MaxAppOpenHelper
 ) {
-    fun initialize(
+    fun initApplovin(
         context: Context,
         sdkKey: String? = null,
         testDeviceIds: List<String>? = null,

@@ -1,0 +1,532 @@
+# AdLib SDK Documentation for LLM Context
+
+## Overview
+
+AdLib is a comprehensive Android ad management SDK that provides unified access to both AdMob and AppLovin MAX ad networks. It features automatic ad preloading, loading dialogs, revenue tracking, and per-ad network configuration via Remote Config.
+
+## Architecture
+
+### Core Components
+
+1. **ActivityAdLoader** - Central ad preloading system with LiveData integration
+2. **AdmobHelper** - AdMob ad operations facade
+3. **ApplovinHelper** - AppLovin MAX ad operations facade
+4. **AnalyticsTracker** - Revenue and impression tracking
+5. **FirebaseRemoteConfigHelper** - Remote configuration management
+6. **AdLibHiltApplication** - Base application class with AOA management
+
+### Ad Types Supported
+
+- **Interstitial Ads** - Full-screen ads between content
+- **Rewarded Ads** - User-initiated ads with rewards
+- **Banner Ads** - Standard banner advertisements
+- **Collapsible Banner Ads** - AdMob-specific collapsible banners
+- **Native Ads** - Custom-styled content ads
+- **App Open Ads** - Launch/foreground ads
+
+## Remote Config Structure
+
+### Activity Configuration
+```
+Key Pattern: PRELOAD_{ActivityName} or PRELOAD_{ActivityName}_{FragmentName}
+Value: "MAIN_IV,MAIN_RV,MAIN_BN,MAIN_NT,MAIN_AOA"
+```
+
+### Per-Ad JSON Configuration
+```json
+{
+  "useMax": true/false,           // Required: which ad network to use
+  "customId": "optional_id"       // Optional: custom ad unit ID override
+}
+```
+
+### App Open Ad Configuration
+```
+Key: APP_AOA
+Value: {"useMax": true/false, "customId": "optional_custom_aoa_id"}
+```
+
+### Fallback Ad Unit ID Keys
+
+**AdMob:**
+- `iv_ad_unit_id`, `rv_ad_unit_id`, `nt_ad_unit_id`, `bn_ad_unit_id`, `c_bn_ad_unit_id`, `aoa_ad_unit_id`
+
+**AppLovin MAX:**
+- `max_iv_ad_unit_id`, `max_rv_ad_unit_id`, `max_nt_ad_unit_id`, `max_bn_ad_unit_id`, `max_c_bn_ad_unit_id`, `max_aoa_ad_unit_id`
+
+## Key Classes and Methods
+
+### AdLibHiltApplication
+
+```kotlin
+open class AdLibHiltApplication : AdLibBaseApplication() {
+    @Inject lateinit var admobHelper: AdmobHelper
+    @Inject lateinit var applovinHelper: ApplovinHelper
+    @Inject lateinit var analyticsTracker: AnalyticsTracker
+    @Inject lateinit var adjustAnalyticsHelper: AdjustAnalyticsHelper
+    @Inject lateinit var remoteConfigHelper: FirebaseRemoteConfigHelper
+    @Inject lateinit var activityAdLoader: ActivityAdLoader
+
+    // Remote Config initialization
+    fun initRemoteConfig(@XmlRes defaultConfig: Int, onFetchComplete: ((Boolean) -> Unit))
+    
+    // Analytics initialization
+    fun initTracker(token: String)
+    
+    // App Open Ad initialization (set ID and load)
+    fun initAOA()
+    
+    // App Open Ad display
+    override fun showAOA()
+}
+```
+
+### ActivityAdLoader
+
+```kotlin
+@Singleton
+class ActivityAdLoader @Inject constructor(
+    private val remoteConfigHelper: FirebaseRemoteConfigHelper,
+    private val admobHelper: AdmobHelper,
+    private val applovinHelper: ApplovinHelper
+) {
+    // Data class for ad configuration from JSON
+    data class AdConfig(
+        val useMax: Boolean,
+        val customId: String? = null
+    )
+
+    // Preload ads when activity resumes
+    fun onActivityResumed(activity: Activity, fragmentName: String? = null)
+    
+    // Get preloaded ad LiveData
+    fun getAdLiveData(key: String): MutableLiveData<Any>?
+    
+    // Clean up after ad shown
+    fun adShownAndShouldBeRemoved(key: String)
+    
+    // Parse JSON configuration for any ad key
+    fun getAdConfig(adKey: String): AdConfig?
+    
+    // Helper for automatic cleanup
+    fun createAdCallback(key: String, onComplete: (() -> Unit)? = null): () -> Unit
+}
+```
+
+### AdmobHelper
+
+```kotlin
+@Singleton
+class AdmobHelper @Inject constructor(...) {
+    // Initialization
+    fun initAdmob(onComplete: () -> Unit, testDeviceIds: List<String>? = null)
+    
+    // Interstitial
+    fun loadInterstitial(context: Context, adUnitId: String, timeout: Int?, listener: InterstitialAdCallback)
+    fun showInterstitial(activity: Activity, adUnitId: String, interstitial: InterstitialAd?, timeout: Int?, listener: InterstitialAdCallback?)
+    
+    // Rewarded
+    fun loadReward(context: Context, adUnitId: String, timeout: Int?, listener: RewardAdCallback)
+    fun showReward(activity: Activity, adUnitId: String, rewarded: RewardedAd?, timeout: Int?, listener: RewardAdCallback?)
+    
+    // Banner
+    fun loadBanner(activity: Activity, adUnitId: String, timeout: Int?, listener: BannerAdCallback): AdView?
+    fun loadCollapsibleBanner(activity: Activity, adUnitId: String, timeout: Int?, listener: BannerAdCallback): AdView?
+    
+    // Native
+    fun loadNative(context: Context, adUnitId: String, timeout: Int?, listener: NativeAdCallback)
+    
+    // App Open
+    fun setAppOpenAdUnitId(adUnitId: String)
+    fun loadAOA(context: Context)
+    fun showAOA(activity: Activity, listener: AppOpenHelper.OnShowAdCompleteListener?)
+}
+```
+
+### ApplovinHelper
+
+```kotlin
+@Singleton
+class ApplovinHelper @Inject constructor(...) {
+    // Initialization
+    fun initApplovin(context: Context, sdkKey: String?, testDeviceIds: List<String>?, onComplete: (() -> Unit)?)
+    
+    // Interstitial
+    fun loadInterstitial(context: Context, adUnitId: String, listener: MaxInterstitialHelper.Listener)
+    fun showInterstitial(activity: Activity, adUnitId: String, interstitial: MaxInterstitialAd?, listener: MaxInterstitialHelper.Listener?)
+    
+    // Rewarded
+    fun loadRewarded(context: Context, adUnitId: String, listener: MaxRewardedHelper.Listener)
+    fun showRewarded(activity: Activity, adUnitId: String, ad: MaxRewardedAd?, listener: MaxRewardedHelper.Listener?)
+    
+    // Banner
+    fun loadBanner(activity: Activity, adUnitId: String, parent: ViewGroup?, listener: MaxBannerHelper.Listener?): MaxAdView?
+    
+    // Native
+    fun loadNative(context: Context, adUnitId: String, listener: MaxNativeHelper.Listener)
+    fun buildNativeAdBinder(...): MaxNativeAdViewBinder
+    fun createNativeAdView(context: Context, binder: MaxNativeAdViewBinder): MaxNativeAdView
+    fun renderNative(nativeAd: MaxAd, targetView: MaxNativeAdView, loader: MaxNativeAdLoader)
+    
+    // App Open
+    fun setAppOpenAdUnitId(adUnitId: String)
+    fun loadAOA(context: Context)
+    fun showAOA(activity: Activity, listener: MaxAppOpenHelper.OnShowAdCompleteListener?)
+}
+```
+
+## Usage Patterns
+
+### 1. Application Setup
+
+```kotlin
+class MyApplication : AdLibHiltApplication() {
+    override fun onCreateExt() {
+        super.onCreateExt()
+        
+        // Initialize AdMob
+        initAdmob(onComplete = {
+            Log.d("AdLib", "AdMob initialized")
+        }, testDeviceIds = listOf("TEST_DEVICE_ID"))
+        
+        // Initialize AppLovin MAX
+        applovinHelper.initApplovin(
+            context = this,
+            sdkKey = "YOUR_SDK_KEY",
+            testDeviceIds = listOf("TEST_DEVICE_ID"),
+            onComplete = {
+                Log.d("AdLib", "AppLovin MAX initialized")
+            }
+        )
+        
+        // Initialize Remote Config
+        initRemoteConfig(R.xml.remote_config_default) { success ->
+            Log.d("AdLib", "Remote Config initialized: $success")
+            
+            // Initialize App Open Ads after Remote Config is ready
+            initAOA()
+        }
+        
+        // Initialize Analytics
+        initTracker("YOUR_ADJUST_TOKEN")
+    }
+}
+```
+
+### 2. Activity Integration
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var activityAdLoader: ActivityAdLoader
+    @Inject
+    lateinit var admobHelper: AdmobHelper
+    @Inject
+    lateinit var applovinHelper: ApplovinHelper
+
+    override fun onResume() {
+        super.onResume()
+        // Automatically preloads ads based on Remote Config
+        activityAdLoader.onActivityResumed(this)
+    }
+    
+    private fun showInterstitial() {
+        val adLiveData = activityAdLoader.getAdLiveData("MAIN_IV")
+        adLiveData?.observe(this) { adObject ->
+            when (adObject) {
+                is InterstitialAd -> {
+                    // AdMob interstitial
+                    admobHelper.showInterstitial(
+                        this, "iv_ad_unit_id", adObject, null,
+                        object : InterstitialAdCallback() {
+                            override fun onAdClosed() {
+                                activityAdLoader.adShownAndShouldBeRemoved("MAIN_IV")
+                            }
+                        }
+                    )
+                }
+                is MaxInterstitialAd -> {
+                    // AppLovin MAX interstitial
+                    applovinHelper.showInterstitial(
+                        this, "max_iv_ad_unit_id", adObject,
+                        object : MaxInterstitialHelper.Listener {
+                            override fun onClosed() {
+                                activityAdLoader.adShownAndShouldBeRemoved("MAIN_IV")
+                            }
+                            override fun onLoaded(interstitial: MaxInterstitialAd) {}
+                            override fun onFailed(error: Any?) {}
+                        }
+                    )
+                }
+                null -> Log.w("MainActivity", "Interstitial ad not available")
+            }
+        }
+    }
+}
+```
+
+### 3. App Open Ad Usage
+
+```kotlin
+class MyApplication : AdLibHiltApplication() {
+    override fun onCreateExt() {
+        super.onCreateExt()
+        
+        // ... other initialization ...
+        
+        // Initialize Remote Config first
+        initRemoteConfig(R.xml.remote_config_default) { success ->
+            if (success) {
+                // Initialize AOA after Remote Config is ready
+                initAOA()
+            }
+        }
+    }
+    
+    // Override to show AOA when app comes to foreground
+    override fun showAOA() {
+        super.showAOA()
+        // This will automatically determine AdMob vs AppLovin MAX
+        // based on APP_AOA remote config
+    }
+}
+```
+
+### 4. Fragment-Specific Ads
+
+```kotlin
+override fun onResume() {
+    super.onResume()
+    // Load ads for specific fragment
+    activityAdLoader.onActivityResumed(requireActivity(), "HomeFragment")
+}
+```
+
+## Ad Loading Flow
+
+1. **Activity Resumed** → `ActivityAdLoader.onActivityResumed()`
+2. **Read Remote Config** → Get ad identifiers for activity
+3. **Parse JSON Config** → Determine network and ad unit ID per ad
+4. **Load Ads** → Call appropriate helper (AdMob/MAX)
+5. **Store in LiveData** → Make ads available for observation
+6. **Show Ads** → Observe LiveData and show when needed
+
+## App Open Ad Flow
+
+1. **Remote Config Ready** → Call `initAOA()`
+2. **Get APP_AOA Config** → Parse JSON to determine network and ad unit ID
+3. **Set Ad Unit ID** → Call appropriate helper's `setAppOpenAdUnitId()`
+4. **Load AOA** → Call appropriate helper's `loadAOA()`
+5. **Show AOA** → Call `showAOA()` when app comes to foreground
+
+## Revenue Tracking
+
+### Analytics Events
+
+**AdMob Events:**
+- `aj_inters_load`, `aj_inters_load_success`, `aj_inters_load_fail`
+- `aj_inters_show_success`, `aj_inters_show_fail`, `aj_inters_close`, `aj_inters_click`
+- `aj_reward_load`, `aj_reward_load_success`, `aj_reward_load_fail`
+- `aj_reward_show_success`, `aj_reward_show_fail`, `aj_reward_close`, `aj_reward_click`
+- `aj_banner_load`, `aj_banner_load_success`, `aj_banner_load_fail`
+- `aj_banner_show_success`, `aj_banner_show_fail`, `aj_banner_close`, `aj_banner_click`
+- `aj_native_load`, `aj_native_load_success`, `aj_native_load_fail`, `aj_native_click`
+- `aj_app_open_load`, `aj_app_open_load_success`, `aj_app_open_load_fail`
+- `aj_app_open_show_success`, `aj_app_open_show_fail`, `aj_app_open_close`, `aj_app_open_click`
+
+**AppLovin MAX Events:**
+- Same event names as AdMob (prefixed with `aj_`)
+
+### Revenue Tracking
+
+```kotlin
+// AdMob revenue tracking
+analyticsTracker.trackAdMobRevenueEvent(adValue, adUnitId, source, adType)
+
+// AppLovin MAX revenue tracking  
+analyticsTracker.trackMaxRevenueEvent(maxAd)
+```
+
+## Dependencies
+
+### Gradle Dependencies
+
+```kotlin
+// AdMob
+implementation 'com.google.android.gms:play-services-ads:22.6.0'
+
+// AppLovin MAX
+implementation 'com.applovin:applovin-sdk:12.4.2'
+
+// Hilt
+implementation 'com.google.dagger:hilt-android:2.48'
+kapt 'com.google.dagger:hilt-compiler:2.48'
+
+// Firebase
+implementation 'com.google.firebase:firebase-analytics:21.5.0'
+implementation 'com.google.firebase:firebase-config:21.6.0'
+
+// Lottie (for loading dialogs)
+implementation 'com.airbnb.android:lottie:6.1.0'
+```
+
+### Hilt Modules
+
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+object AdmobModule {
+    @Provides
+    @Singleton
+    fun provideAdmobHelper(...): AdmobHelper = AdmobHelper(...)
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ApplovinModule {
+    @Provides
+    @Singleton
+    fun provideApplovinHelper(...): ApplovinHelper = ApplovinHelper(...)
+}
+```
+
+## Best Practices
+
+1. **Always check for null** when getting LiveData
+2. **Handle both ad types** (AdMob and MAX) in observers
+3. **Call adShownAndShouldBeRemoved()** for one-time use ads
+4. **Use existing helper methods** instead of creating new ones
+5. **Test both networks** with different configurations
+6. **Monitor loading times** and performance
+7. **Use proper ad unit IDs** for each environment (debug/production)
+8. **Initialize AOA after Remote Config** is ready
+9. **Separate AOA initialization from display** for better control
+
+## Error Handling
+
+- **Ad not loaded**: `getAdLiveData()` returns `null`
+- **Ad load failed**: LiveData is removed from cache
+- **Invalid configuration**: Ad is skipped with warning logs
+- **Network issues**: Handled by respective ad network SDKs
+- **Loading dialog**: Automatically shown/hidden for loading states
+- **AOA config null**: Falls back to AdMob with default ad unit ID
+
+## Customization
+
+### Custom Native Ad Views
+
+```kotlin
+// Create custom binder
+val binder = applovinHelper.buildNativeAdBinder(
+    layoutResId = R.layout.ad_native_max,
+    titleTextViewId = R.id.ad_title,
+    bodyTextViewId = R.id.ad_body,
+    // ... other view IDs
+)
+
+// Create and render native ad view
+val nativeAdView = applovinHelper.createNativeAdView(context, binder)
+applovinHelper.renderNative(nativeAd, nativeAdView, loader)
+```
+
+### Custom Loading Dialogs
+
+The system uses `LoadingAdsDialog` with Lottie animations. Customize by modifying:
+- `R.layout.dialog_prepair_loading_ads`
+- `R.raw.loading` (Lottie animation)
+- `R.string.loading_ads` (loading text)
+
+## Implementation Notes
+
+### Loading Dialog Pattern
+
+Both AdMob and AppLovin MAX helpers follow the same loading dialog pattern:
+
+```kotlin
+// Show method with loading dialog (when ad is null)
+fun show(activity: Activity, adUnitId: String, ad: AdType?, listener: Listener?) {
+    if (ad == null) {
+        val loadingDialog = LoadingAdsDialog(activity)
+        if (!activity.isFinishing && !activity.isDestroyed)
+            loadingDialog.show()
+        load(activity, adUnitId, object : Listener {
+            override fun onLoaded(ad: AdType) {
+                show(activity, ad, listener)
+                if (loadingDialog.isShowing) {
+                    loadingDialog.dismiss()
+                }
+            }
+            override fun onFailed(error: Any?) {
+                listener?.onFailed(error)
+                if (loadingDialog.isShowing) {
+                    loadingDialog.dismiss()
+                }
+            }
+        })
+    } else {
+        show(activity, ad, listener)
+    }
+}
+```
+
+### App Open Ad Pattern
+
+Both AdMob and AppLovin MAX App Open helpers follow identical patterns:
+
+```kotlin
+// State management
+private var loadTime: Long = 0
+private var adUnitId = ""
+private var appOpenAd: AppOpenAd? = null
+private var isLoadingAd = false
+private var isShowingAd = false
+val adLoaded = MutableLiveData<Boolean>()
+
+// 4-hour expiration check
+private fun wasLoadTimeLessThanNHoursAgo(numHours: Long): Boolean
+private fun isAdAvailable(): Boolean
+
+// Show with callback
+fun showAdIfAvailable(activity: Activity, adCallback: OnShowAdCompleteListener)
+```
+
+### Revenue Tracking Pattern
+
+```kotlin
+// AdMob revenue tracking
+ad.onPaidEventListener = OnPaidEventListener { adValue ->
+    analyticsTracker.trackAdMobRevenueEvent(
+        adValue,
+        ad.adUnitId,
+        ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName ?: "AdMob",
+        "AD_TYPE"
+    )
+}
+
+// AppLovin MAX revenue tracking
+ad.setRevenueListener { maxAd ->
+    analyticsTracker.trackMaxRevenueEvent(maxAd)
+}
+```
+
+## Remote Config Examples
+
+### Activity Preload Configuration
+```
+PRELOAD_MainActivity = "MAIN_IV,MAIN_RV,MAIN_BN,MAIN_NT"
+PRELOAD_HomeFragment = "HOME_IV,HOME_RV"
+```
+
+### Ad-Specific Configuration
+```
+MAIN_IV = {"useMax": false, "customId": "ca-app-pub-xxx/xxx"}
+MAIN_RV = {"useMax": true}
+HOME_IV = {"useMax": true, "customId": "max_xxx_xxx"}
+```
+
+### App Open Ad Configuration
+```
+APP_AOA = {"useMax": true, "customId": "max_aoa_xxx"}
+```
+
+This documentation provides comprehensive context for implementing AdLib SDK in any Android project.

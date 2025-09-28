@@ -7,8 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.tqhit.adlib.sdk.adjust.AdjustAnalyticsHelper
-import com.tqhit.adlib.sdk.ads.AdmobHelper
-import com.tqhit.adlib.sdk.ads.AppOpenHelper
+import com.tqhit.adlib.sdk.ads.admob.AdmobHelper
+import com.tqhit.adlib.sdk.ads.admob.AppOpenHelper
+import com.tqhit.adlib.sdk.ads.applovin.ApplovinHelper
+import com.tqhit.adlib.sdk.ads.applovin.MaxAppOpenHelper
 import com.tqhit.adlib.sdk.ads.loader.ActivityAdLoader
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.base.AdLibBaseApplication
@@ -17,7 +19,10 @@ import javax.inject.Inject
 
 // @HiltAndroidApp
 open class AdLibHiltApplication : AdLibBaseApplication() {
+    protected val APP_AOA_CONFIG_KEY = "APP_AOA"
+
     @Inject lateinit var admobHelper: AdmobHelper
+    @Inject lateinit var applovinHelper: ApplovinHelper
     @Inject lateinit var analyticsTracker: AnalyticsTracker
     @Inject lateinit var adjustAnalyticsHelper: AdjustAnalyticsHelper
     @Inject lateinit var remoteConfigHelper: FirebaseRemoteConfigHelper
@@ -25,10 +30,6 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
 
     override fun onCreateExt() {
         super.onCreateExt()
-    }
-
-    open fun initAdmob(onComplete: () -> Unit, testDeviceIds: List<String>? = null) {
-        admobHelper.initAdmob(onComplete, testDeviceIds)
     }
 
     fun initRemoteConfig(@XmlRes defaultConfig: Int,
@@ -40,15 +41,53 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
         adjustAnalyticsHelper.initAdjust(token)
     }
 
+    fun initAOA() {
+        if (currentActivity == null) return
+
+        val adConfig = activityAdLoader.getAdConfig(APP_AOA_CONFIG_KEY)
+        val useMax = adConfig?.useMax ?: false
+        val customId = adConfig?.customId
+        
+        val adUnitId = if (!customId.isNullOrBlank()) {
+            customId
+        } else {
+            if (useMax) {
+                remoteConfigHelper.getString(ActivityAdLoader.RC_MAX_AOA_AD_UNIT_ID)
+            } else {
+                remoteConfigHelper.getString(ActivityAdLoader.RC_AOA_AD_UNIT_ID)
+            }
+        }
+
+        if (useMax) {
+            applovinHelper.setAppOpenAdUnitId(adUnitId)
+            applovinHelper.loadAOA(currentActivity!!)
+        } else {
+            admobHelper.setAppOpenAdUnitId(adUnitId)
+            admobHelper.loadAOA(currentActivity!!)
+        }
+    }
+
     override fun showAOA() {
         super.showAOA()
 
-        if (currentActivity != null) {
+        if (currentActivity == null) return
+
+        val adConfig = activityAdLoader.getAdConfig(APP_AOA_CONFIG_KEY)
+        val useMax = adConfig?.useMax ?: false
+
+        if (useMax) {
+            applovinHelper.showAOA(
+                currentActivity!!,
+                object : MaxAppOpenHelper.OnShowAdCompleteListener {
+                    override fun onShowAdComplete() {}
+                }
+            )
+        } else {
             admobHelper.showAOA(
-                    currentActivity!!,
-                    object : AppOpenHelper.OnShowAdCompleteListener {
-                        override fun onShowAdComplete() {}
-                    }
+                currentActivity!!,
+                object : AppOpenHelper.OnShowAdCompleteListener {
+                    override fun onShowAdComplete() {}
+                }
             )
         }
     }
