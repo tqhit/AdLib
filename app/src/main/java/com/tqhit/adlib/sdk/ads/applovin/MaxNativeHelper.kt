@@ -7,6 +7,7 @@ import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
 import com.applovin.mediation.nativeAds.MaxNativeAdListener
 import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxNativeAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
@@ -25,13 +26,13 @@ class MaxNativeHelper @Inject constructor(
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
 
-    fun load(
+    fun loadNative(
         context: Context,
         adUnitId: String,
-        listener: Listener
+        adCallback: MaxNativeAdCallback?
     ) {
         if (!enableAd) {
-            listener.onFailed(null)
+            adCallback?.onAdFailedToLoad(null)
             return
         }
         analyticsTracker.logEvent("aj_native_load")
@@ -41,20 +42,20 @@ class MaxNativeHelper @Inject constructor(
             override fun onNativeAdLoaded(nativeAdView: MaxNativeAdView?, ad: com.applovin.mediation.MaxAd) {
                 analyticsTracker.logEvent("aj_native_load_success")
                 if (nativeAdView != null) {
-                    listener.onLoaded(nativeAdView, loader)
+                    adCallback?.onAdLoaded(nativeAdView, loader)
                 } else {
-                    listener.onFailed(null)
+                    adCallback?.onAdFailedToLoad(null)
                 }
             }
 
             override fun onNativeAdLoadFailed(adUnitId: String, error: MaxError) {
                 analyticsTracker.logEvent("aj_native_load_fail")
-                listener.onFailed(error)
+                adCallback?.onAdFailedToLoad(error)
             }
 
             override fun onNativeAdClicked(ad: com.applovin.mediation.MaxAd) {
                 analyticsTracker.logEvent("aj_native_click")
-                listener.onClicked()
+                adCallback?.onAdClicked()
             }
         })
         loader.setRevenueListener { ad ->
@@ -95,14 +96,8 @@ class MaxNativeHelper @Inject constructor(
         return MaxNativeAdView(binder, context)
     }
 
-    fun render(nativeAd: MaxAd, targetView: MaxNativeAdView, loader: MaxNativeAdLoader) {
+    fun renderNative(nativeAd: MaxAd, targetView: MaxNativeAdView, loader: MaxNativeAdLoader) {
         loader.render(targetView, nativeAd)
-    }
-
-    interface Listener {
-        fun onLoaded(nativeAdView: MaxNativeAdView, loader: MaxNativeAdLoader)
-        fun onFailed(error: Any?)
-        fun onClicked()
     }
 }
 

@@ -1,4 +1,4 @@
-package com.tqhit.adlib.sdk.ads.callback
+package com.tqhit.adlib.sdk.ads.callback.common
 
 import com.google.android.ump.FormError
 

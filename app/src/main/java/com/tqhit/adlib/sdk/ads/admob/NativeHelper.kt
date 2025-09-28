@@ -17,7 +17,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.tqhit.adlib.R
-import com.tqhit.adlib.sdk.ads.callback.NativeAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.NativeAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper

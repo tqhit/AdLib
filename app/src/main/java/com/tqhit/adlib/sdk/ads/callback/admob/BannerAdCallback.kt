@@ -1,4 +1,4 @@
-package com.tqhit.adlib.sdk.ads.callback
+package com.tqhit.adlib.sdk.ads.callback.admob
 
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError

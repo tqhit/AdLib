@@ -6,6 +6,7 @@ import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxAdListener
 import com.applovin.mediation.MaxError
 import com.applovin.mediation.ads.MaxInterstitialAd
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxInterstitialAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
@@ -25,13 +26,13 @@ class MaxInterstitialHelper @Inject constructor(
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
 
-    fun load(
+    fun loadInterstitial(
         context: Context,
         adUnitId: String,
-        listener: Listener
+        adCallback: MaxInterstitialAdCallback?
     ) {
         if (!enableAd) {
-            listener.onFailed(null)
+            adCallback?.onAdFailedToLoad(null)
             return
         }
 
@@ -41,30 +42,32 @@ class MaxInterstitialHelper @Inject constructor(
         interstitial.setListener(object : MaxAdListener {
             override fun onAdLoaded(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_inters_load_success")
-                listener.onLoaded(interstitial)
+                adCallback?.onAdLoaded(interstitial)
             }
 
             override fun onAdLoadFailed(adUnitId: String, error: MaxError) {
                 analyticsTracker.logEvent("aj_inters_load_fail")
-                listener.onFailed(error)
+                adCallback?.onAdFailedToLoad(error)
             }
 
             override fun onAdDisplayFailed(ad: MaxAd, error: MaxError) {
                 analyticsTracker.logEvent("aj_inters_show_fail")
-                listener.onClosed()
+                adCallback?.onAdFailedToShowFullScreenContent(error)
             }
 
             override fun onAdDisplayed(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_inters_show_success")
+                adCallback?.onAdOpened()
             }
 
             override fun onAdHidden(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_inters_close")
-                listener.onClosed()
+                adCallback?.onAdClosed()
             }
 
             override fun onAdClicked(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_inters_click")
+                adCallback?.onAdClicked()
             }
         })
         interstitial.setRevenueListener { ad ->
@@ -73,14 +76,14 @@ class MaxInterstitialHelper @Inject constructor(
         interstitial.loadAd()
     }
 
-    fun show(
+    fun showInterstitial(
         activity: Activity,
         interstitialAdUnitId: String,
         interstitial: MaxInterstitialAd?,
-        listener: Listener?
+        adCallback: MaxInterstitialAdCallback?
     ) {
         if (!enableAd) {
-            listener?.onClosed()
+            adCallback?.onAdClosed()
             return
         }
 
@@ -88,46 +91,38 @@ class MaxInterstitialHelper @Inject constructor(
             val loadingAdsDialog = LoadingAdsDialog(activity)
             if (!activity.isFinishing && !activity.isDestroyed)
                 loadingAdsDialog.show()
-            load(activity, interstitialAdUnitId, object : Listener {
-                override fun onLoaded(interstitial: MaxInterstitialAd) {
-                    show(activity, interstitial, listener)
+            loadInterstitial(activity, interstitialAdUnitId, object : MaxInterstitialAdCallback() {
+                override fun onAdLoaded(interstitialAd: MaxInterstitialAd) {
+                    showInterstitial(activity, interstitialAd, adCallback)
                     if (loadingAdsDialog.isShowing) {
                         loadingAdsDialog.dismiss()
                     }
                 }
 
-                override fun onFailed(error: Any?) {
-                    listener?.onFailed(error)
-                    listener?.onClosed()
+                override fun onAdFailedToLoad(error: MaxError?) {
+                    adCallback?.onAdFailedToLoad(error)
+                    adCallback?.onAdClosed()
                     if (loadingAdsDialog.isShowing) {
                         loadingAdsDialog.dismiss()
                     }
                 }
-
-                override fun onClosed() { }
             })
         } else {
-            show(activity, interstitial, listener)
+            showInterstitial(activity, interstitial, adCallback)
         }
     }
 
-    fun show(
+    fun showInterstitial(
         activity: Activity,
         interstitial: MaxInterstitialAd,
-        listener: Listener?
+        adCallback: MaxInterstitialAdCallback?
     ) {
         if (interstitial.isReady) {
             analyticsTracker.logEvent("aj_inters_show")
             interstitial.showAd(activity)
         } else {
-            listener?.onClosed()
+            adCallback?.onAdClosed()
         }
-    }
-
-    interface Listener {
-        fun onLoaded(interstitial: MaxInterstitialAd)
-        fun onFailed(error: Any?)
-        fun onClosed()
     }
 }
 

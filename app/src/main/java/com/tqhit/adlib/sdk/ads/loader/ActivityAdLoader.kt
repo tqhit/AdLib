@@ -15,10 +15,14 @@ import com.applovin.mediation.ads.MaxRewardedAd
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
 import com.tqhit.adlib.sdk.ads.admob.AdmobHelper
-import com.tqhit.adlib.sdk.ads.callback.BannerAdCallback
-import com.tqhit.adlib.sdk.ads.callback.InterstitialAdCallback
-import com.tqhit.adlib.sdk.ads.callback.NativeAdCallback
-import com.tqhit.adlib.sdk.ads.callback.RewardAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.BannerAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.InterstitialAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.NativeAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.RewardAdCallback
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxBannerAdCallback
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxInterstitialAdCallback
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxNativeAdCallback
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxRewardAdCallback
 import com.tqhit.adlib.sdk.ads.applovin.ApplovinHelper
 import com.tqhit.adlib.sdk.ads.applovin.MaxInterstitialHelper
 import com.tqhit.adlib.sdk.ads.applovin.MaxRewardedHelper
@@ -193,14 +197,13 @@ class ActivityAdLoader @Inject constructor(
         when {
             adKey.endsWith(INTERSTITIAL_SUFFIX) -> {
                 if (adConfig.useMax) {
-                    applovinHelper.loadInterstitial(activity, adUnitId, object : MaxInterstitialHelper.Listener {
-                        override fun onLoaded(interstitial: MaxInterstitialAd) {
-                            handleAdLoaded(adKey, interstitial, "Interstitial", adLiveData)
+                    applovinHelper.loadInterstitial(activity, adUnitId, object : MaxInterstitialAdCallback() {
+                        override fun onAdLoaded(interstitialAd: MaxInterstitialAd) {
+                            handleAdLoaded(adKey, interstitialAd, "Interstitial", adLiveData)
                         }
-                        override fun onFailed(error: Any?) {
-                            handleAdFailedToLoad(adKey, (error as? com.applovin.mediation.MaxError)?.message, "Interstitial")
+                        override fun onAdFailedToLoad(error: com.applovin.mediation.MaxError?) {
+                            handleAdFailedToLoad(adKey, error?.message, "Interstitial")
                         }
-                        override fun onClosed() { }
                     })
                 } else {
                     admobHelper.loadInterstitial(activity, adUnitId, 10000, object : InterstitialAdCallback() {
@@ -218,16 +221,13 @@ class ActivityAdLoader @Inject constructor(
             }
             adKey.endsWith(REWARDED_SUFFIX) -> {
                 if (adConfig.useMax) {
-                    applovinHelper.loadRewarded(activity, adUnitId, object : MaxRewardedHelper.Listener {
-                        override fun onLoaded(ad: MaxRewardedAd) {
-                            handleAdLoaded(adKey, ad, "Rewarded", adLiveData)
+                    applovinHelper.loadReward(activity, adUnitId, object : MaxRewardAdCallback() {
+                        override fun onAdLoaded(rewardedAd: MaxRewardedAd) {
+                            handleAdLoaded(adKey, rewardedAd, "Rewarded", adLiveData)
                         }
-                        override fun onFailed(error: Any?) {
-                            handleAdFailedToLoad(adKey, (error as? com.applovin.mediation.MaxError)?.message, "Rewarded")
+                        override fun onAdFailedToLoad(error: com.applovin.mediation.MaxError?) {
+                            handleAdFailedToLoad(adKey, error?.message, "Rewarded")
                         }
-                        override fun onClosed() { }
-                        override fun onClicked() { }
-                        override fun onReward(reward: com.applovin.mediation.MaxReward) { }
                     })
                 } else {
                     admobHelper.loadReward(activity, adUnitId, 10000, object : RewardAdCallback() {
@@ -245,16 +245,14 @@ class ActivityAdLoader @Inject constructor(
             }
             adKey.endsWith(NATIVE_SUFFIX) -> {
                 if (adConfig.useMax) {
-                    applovinHelper.loadNative(activity, adUnitId, object : MaxNativeHelper.Listener {
-                        override fun onLoaded(nativeAdView: MaxNativeAdView, loader: MaxNativeAdLoader) {
+                    applovinHelper.loadNative(activity, adUnitId, object : MaxNativeAdCallback() {
+                        override fun onAdLoaded(nativeAdView: MaxNativeAdView, loader: MaxNativeAdLoader) {
                             handleAdLoaded(adKey, nativeAdView, "Native", adLiveData)
                         }
 
-                        override fun onFailed(error: Any?) {
-                            handleAdFailedToLoad(adKey, (error as? com.applovin.mediation.MaxError)?.message, "Native")
+                        override fun onAdFailedToLoad(error: com.applovin.mediation.MaxError?) {
+                            handleAdFailedToLoad(adKey, error?.message, "Native")
                         }
-
-                        override fun onClicked() { }
                     })
                 } else {
                     admobHelper.loadNative(activity, adUnitId, 100000, object : NativeAdCallback() {
@@ -272,15 +270,13 @@ class ActivityAdLoader @Inject constructor(
             }
             adKey.endsWith(BANNER_SUFFIX) -> {
                 if (adConfig.useMax) {
-                    applovinHelper.loadBanner(activity, adUnitId, null, object : com.tqhit.adlib.sdk.ads.applovin.MaxBannerHelper.Listener {
-                        override fun onLoaded(view: MaxAdView) {
-                            handleAdLoaded(adKey, view, "Banner", adLiveData)
+                    applovinHelper.loadBanner(activity, adUnitId, null, object : MaxBannerAdCallback() {
+                        override fun onAdLoaded(adView: MaxAdView) {
+                            handleAdLoaded(adKey, adView, "Banner", adLiveData)
                         }
-                        override fun onFailed(error: Any?) {
-                            handleAdFailedToLoad(adKey, (error as? com.applovin.mediation.MaxError)?.message, "Banner")
+                        override fun onAdFailedToLoad(error: com.applovin.mediation.MaxError?) {
+                            handleAdFailedToLoad(adKey, error?.message, "Banner")
                         }
-                        override fun onClosed() { }
-                        override fun onClicked() { }
                     })
                 } else {
                     admobHelper.loadBanner(activity, adUnitId, 10000, object : BannerAdCallback() {
@@ -299,15 +295,13 @@ class ActivityAdLoader @Inject constructor(
             adKey.endsWith(COLLAPSIBLE_BANNER_SUFFIX) -> {
                 if (adConfig.useMax) {
                     // No collapsible in MAX; fallback to standard banner
-                    applovinHelper.loadBanner(activity, adUnitId, null, object : com.tqhit.adlib.sdk.ads.applovin.MaxBannerHelper.Listener {
-                        override fun onLoaded(view: MaxAdView) {
-                            handleAdLoaded(adKey, view, "Collapsible Banner", adLiveData)
+                    applovinHelper.loadBanner(activity, adUnitId, null, object : MaxBannerAdCallback() {
+                        override fun onAdLoaded(adView: MaxAdView) {
+                            handleAdLoaded(adKey, adView, "Collapsible Banner", adLiveData)
                         }
-                        override fun onFailed(error: Any?) {
-                            handleAdFailedToLoad(adKey, (error as? com.applovin.mediation.MaxError)?.message, "Collapsible Banner")
+                        override fun onAdFailedToLoad(error: com.applovin.mediation.MaxError?) {
+                            handleAdFailedToLoad(adKey, error?.message, "Collapsible Banner")
                         }
-                        override fun onClosed() { }
-                        override fun onClicked() { }
                     })
                 } else {
                     admobHelper.loadCollapsibleBanner(activity, adUnitId, 10000, object : BannerAdCallback() {

@@ -7,7 +7,7 @@ import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentInformation
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
-import com.tqhit.adlib.sdk.ads.callback.IAdmobConsentCallback
+import com.tqhit.adlib.sdk.ads.callback.common.IAdmobConsentCallback
 import javax.inject.Inject
 import javax.inject.Singleton
 

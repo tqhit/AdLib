@@ -7,6 +7,7 @@ import com.applovin.mediation.MaxReward
 import com.applovin.mediation.MaxRewardedAdListener
 import com.applovin.mediation.MaxError
 import com.applovin.mediation.ads.MaxRewardedAd
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxRewardAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
@@ -26,13 +27,13 @@ class MaxRewardedHelper @Inject constructor(
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
 
-    fun load(
+    fun loadReward(
         context: Context,
         adUnitId: String,
-        listener: Listener
+        adCallback: MaxRewardAdCallback?
     ) {
         if (!enableAd) {
-            listener.onFailed(null)
+            adCallback?.onAdFailedToLoad(null)
             return
         }
         analyticsTracker.logEvent("aj_reward_load")
@@ -41,29 +42,30 @@ class MaxRewardedHelper @Inject constructor(
         rewarded.setListener(object : MaxRewardedAdListener {
             override fun onAdLoaded(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_reward_load_success")
-                listener.onLoaded(rewarded)
+                adCallback?.onAdLoaded(rewarded)
             }
             override fun onAdLoadFailed(adUnitId: String, error: MaxError) {
                 analyticsTracker.logEvent("aj_reward_load_fail")
-                listener.onFailed(error)
+                adCallback?.onAdFailedToLoad(error)
             }
             override fun onAdDisplayFailed(ad: MaxAd, error: MaxError) {
                 analyticsTracker.logEvent("aj_reward_show_fail")
-                listener.onClosed()
+                adCallback?.onAdFailedToShowFullScreenContent(error)
             }
             override fun onAdDisplayed(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_reward_show_success")
+                adCallback?.onAdOpened()
             }
             override fun onAdHidden(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_reward_close")
-                listener.onClosed()
+                adCallback?.onAdClosed()
             }
             override fun onAdClicked(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_reward_click")
-                listener.onClicked()
+                adCallback?.onAdClicked()
             }
             override fun onUserRewarded(ad: MaxAd, reward: MaxReward) {
-                listener.onReward(reward)
+                adCallback?.onUserEarnedReward(reward)
             }
         })
         rewarded.setRevenueListener { ad ->
@@ -72,14 +74,14 @@ class MaxRewardedHelper @Inject constructor(
         rewarded.loadAd()
     }
 
-    fun show(
+    fun showReward(
         activity: Activity,
         rewardedAdUnitId: String,
         rewardedAd: MaxRewardedAd?,
-        listener: Listener?
+        adCallback: MaxRewardAdCallback?
     ) {
         if (!enableAd) {
-            listener?.onFailed(null)
+            adCallback?.onAdFailedToLoad(null)
             return
         }
 
@@ -87,45 +89,33 @@ class MaxRewardedHelper @Inject constructor(
             val loadingAdsDialog = LoadingAdsDialog(activity)
             if (!activity.isFinishing && !activity.isDestroyed)
                 loadingAdsDialog.show()
-            load(activity, rewardedAdUnitId, object : Listener {
-                override fun onLoaded(ad: MaxRewardedAd) {
-                    show(activity, ad, listener)
+            loadReward(activity, rewardedAdUnitId, object : MaxRewardAdCallback() {
+                override fun onAdLoaded(rewardedAd: MaxRewardedAd) {
+                    showReward(activity, rewardedAd, adCallback)
                     if (loadingAdsDialog.isShowing) {
                         loadingAdsDialog.dismiss()
                     }
                 }
 
-                override fun onFailed(error: Any?) {
-                    listener?.onFailed(error)
+                override fun onAdFailedToLoad(error: MaxError?) {
+                    adCallback?.onAdFailedToLoad(error)
                     if (loadingAdsDialog.isShowing) {
                         loadingAdsDialog.dismiss()
                     }
                 }
-
-                override fun onClosed() { }
-                override fun onClicked() { }
-                override fun onReward(reward: MaxReward) { }
             })
         } else {
-            show(activity, rewardedAd, listener)
+            showReward(activity, rewardedAd, adCallback)
         }
     }
 
-    fun show(activity: Activity, ad: MaxRewardedAd, listener: Listener?) {
+    fun showReward(activity: Activity, ad: MaxRewardedAd, adCallback: MaxRewardAdCallback?) {
         if (ad.isReady) {
             analyticsTracker.logEvent("aj_reward_show")
             ad.showAd(activity)
         } else {
-            listener?.onClosed()
+            adCallback?.onAdClosed()
         }
-    }
-
-    interface Listener {
-        fun onLoaded(ad: MaxRewardedAd)
-        fun onFailed(error: Any?)
-        fun onClosed()
-        fun onClicked()
-        fun onReward(reward: MaxReward)
     }
 }
 

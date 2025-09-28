@@ -8,6 +8,7 @@ import com.applovin.mediation.MaxError
 import com.applovin.mediation.MaxAdViewAdListener
 import com.applovin.mediation.ads.MaxAdView
 import com.applovin.mediation.MaxAdFormat
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxBannerAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
@@ -30,10 +31,10 @@ class MaxBannerHelper @Inject constructor(
         activity: Activity,
         adUnitId: String,
         parent: ViewGroup?,
-        listener: Listener?
+        adCallback: MaxBannerAdCallback?
     ): MaxAdView? {
         if (!enableAd) {
-            listener?.onFailed(null)
+            adCallback?.onAdFailedToLoad(null)
             return null
         }
         analyticsTracker.logEvent("aj_banner_load")
@@ -42,25 +43,26 @@ class MaxBannerHelper @Inject constructor(
         adView.setListener(object : MaxAdViewAdListener {
             override fun onAdLoaded(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_banner_load_success")
-                listener?.onLoaded(adView)
+                adCallback?.onAdLoaded(adView)
             }
             override fun onAdLoadFailed(adUnitId: String, error: MaxError) {
                 analyticsTracker.logEvent("aj_banner_load_fail")
-                listener?.onFailed(error)
+                adCallback?.onAdFailedToLoad(error)
             }
             override fun onAdDisplayFailed(ad: MaxAd, error: MaxError) {
                 analyticsTracker.logEvent("aj_banner_show_fail")
             }
             override fun onAdDisplayed(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_banner_show_success")
+                adCallback?.onAdOpened()
             }
             override fun onAdHidden(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_banner_close")
-                listener?.onClosed()
+                adCallback?.onAdClosed()
             }
             override fun onAdClicked(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_banner_click")
-                listener?.onClicked()
+                adCallback?.onAdClicked()
             }
             override fun onAdExpanded(ad: MaxAd) {}
             override fun onAdCollapsed(ad: MaxAd) {}
@@ -76,12 +78,6 @@ class MaxBannerHelper @Inject constructor(
         return adView
     }
 
-    interface Listener {
-        fun onLoaded(view: MaxAdView)
-        fun onFailed(error: Any?)
-        fun onClosed()
-        fun onClicked()
-    }
 }
 
 

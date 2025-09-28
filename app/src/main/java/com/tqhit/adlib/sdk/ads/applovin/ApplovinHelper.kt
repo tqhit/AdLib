@@ -15,6 +15,10 @@ import com.applovin.mediation.ads.MaxRewardedAd
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader
 import com.applovin.mediation.nativeAds.MaxNativeAdView
 import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxBannerAdCallback
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxInterstitialAdCallback
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxRewardAdCallback
+import com.tqhit.adlib.sdk.ads.callback.applovin.MaxNativeAdCallback
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,39 +50,39 @@ class ApplovinHelper @Inject constructor(
 
     // Banner
     @MainThread
-    fun loadBanner(activity: Activity, adUnitId: String, parent: ViewGroup?, listener: MaxBannerHelper.Listener?): MaxAdView? {
-        return maxBannerHelper.loadBanner(activity, adUnitId, parent, listener)
+    fun loadBanner(activity: Activity, adUnitId: String, parent: ViewGroup?, adCallback: MaxBannerAdCallback?): MaxAdView? {
+        return maxBannerHelper.loadBanner(activity, adUnitId, parent, adCallback)
     }
 
     // Interstitial
-    fun loadInterstitial(context: Context, adUnitId: String, listener: MaxInterstitialHelper.Listener) {
-        maxInterstitialHelper.load(context, adUnitId, listener)
+    fun loadInterstitial(context: Context, adUnitId: String, adCallback: MaxInterstitialAdCallback?) {
+        maxInterstitialHelper.loadInterstitial(context, adUnitId, adCallback)
     }
 
-    fun showInterstitial(activity: Activity, adUnitId: String, interstitial: MaxInterstitialAd?, listener: MaxInterstitialHelper.Listener?) {
-        maxInterstitialHelper.show(activity, adUnitId, interstitial, listener)
+    fun showInterstitial(activity: Activity, adUnitId: String, interstitial: MaxInterstitialAd?, adCallback: MaxInterstitialAdCallback?) {
+        maxInterstitialHelper.showInterstitial(activity, adUnitId, interstitial, adCallback)
     }
 
-    fun showInterstitial(activity: Activity, interstitial: MaxInterstitialAd, listener: MaxInterstitialHelper.Listener?) {
-        maxInterstitialHelper.show(activity, interstitial, listener)
+    fun showInterstitial(activity: Activity, interstitial: MaxInterstitialAd, adCallback: MaxInterstitialAdCallback?) {
+        maxInterstitialHelper.showInterstitial(activity, interstitial, adCallback)
     }
 
     // Rewarded
-    fun loadRewarded(context: Context, adUnitId: String, listener: MaxRewardedHelper.Listener) {
-        maxRewardedHelper.load(context, adUnitId, listener)
+    fun loadReward(context: Context, adUnitId: String, adCallback: MaxRewardAdCallback?) {
+        maxRewardedHelper.loadReward(context, adUnitId, adCallback)
     }
 
-    fun showRewarded(activity: Activity, adUnitId: String, ad: MaxRewardedAd?, listener: MaxRewardedHelper.Listener?) {
-        maxRewardedHelper.show(activity, adUnitId, ad, listener)
+    fun showReward(activity: Activity, adUnitId: String, ad: MaxRewardedAd?, adCallback: MaxRewardAdCallback?) {
+        maxRewardedHelper.showReward(activity, adUnitId, ad, adCallback)
     }
 
-    fun showRewarded(activity: Activity, ad: MaxRewardedAd, listener: MaxRewardedHelper.Listener?) {
-        maxRewardedHelper.show(activity, ad, listener)
+    fun showReward(activity: Activity, ad: MaxRewardedAd, adCallback: MaxRewardAdCallback?) {
+        maxRewardedHelper.showReward(activity, ad, adCallback)
     }
 
     // Native
-    fun loadNative(context: Context, adUnitId: String, listener: MaxNativeHelper.Listener) {
-        maxNativeHelper.load(context, adUnitId, listener)
+    fun loadNative(context: Context, adUnitId: String, adCallback: MaxNativeAdCallback?) {
+        maxNativeHelper.loadNative(context, adUnitId, adCallback)
     }
     fun showNative(nativeAdView: MaxNativeAdView, parent: ViewGroup) {
         maxNativeHelper.show(nativeAdView, parent)
@@ -113,7 +117,7 @@ class ApplovinHelper @Inject constructor(
     }
 
     fun renderNative(nativeAd: MaxAd, targetView: MaxNativeAdView, loader: MaxNativeAdLoader) {
-        maxNativeHelper.render(nativeAd, targetView, loader)
+        maxNativeHelper.renderNative(nativeAd, targetView, loader)
     }
 
     // App Open

@@ -13,10 +13,10 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.android.gms.ads.rewarded.RewardedAd
-import com.tqhit.adlib.sdk.ads.callback.BannerAdCallback
-import com.tqhit.adlib.sdk.ads.callback.InterstitialAdCallback
-import com.tqhit.adlib.sdk.ads.callback.NativeAdCallback
-import com.tqhit.adlib.sdk.ads.callback.RewardAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.BannerAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.InterstitialAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.NativeAdCallback
+import com.tqhit.adlib.sdk.ads.callback.admob.RewardAdCallback
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
