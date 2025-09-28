@@ -42,8 +42,6 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
     }
 
     fun initAOA() {
-        if (currentActivity == null) return
-
         val adConfig = activityAdLoader.getAdConfig(APP_AOA_CONFIG_KEY)
         val useMax = adConfig?.useMax ?: false
         val customId = adConfig?.customId
@@ -60,10 +58,10 @@ open class AdLibHiltApplication : AdLibBaseApplication() {
 
         if (useMax) {
             applovinHelper.setAppOpenAdUnitId(adUnitId)
-            applovinHelper.loadAOA(currentActivity!!)
+            applovinHelper.loadAOA(applicationContext)
         } else {
             admobHelper.setAppOpenAdUnitId(adUnitId)
-            admobHelper.loadAOA(currentActivity!!)
+            admobHelper.loadAOA(applicationContext)
         }
     }
 
