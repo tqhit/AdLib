@@ -81,9 +81,10 @@ object ApplovinModule {
     fun provideMaxAppOpenHelper(
         analyticsTracker: AnalyticsTracker,
         remoteConfigHelper: FirebaseRemoteConfigHelper,
-        preferencesHelper: PreferencesHelper
+        preferencesHelper: PreferencesHelper,
+        adFrequencyManager: AdFrequencyManager
     ): MaxAppOpenHelper {
-        return MaxAppOpenHelper(analyticsTracker, remoteConfigHelper, preferencesHelper)
+        return MaxAppOpenHelper(analyticsTracker, remoteConfigHelper, preferencesHelper, adFrequencyManager)
     }
 }
 

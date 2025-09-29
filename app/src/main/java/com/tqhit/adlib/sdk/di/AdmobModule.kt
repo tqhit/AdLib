@@ -94,8 +94,9 @@ object AdmobModule {
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
         remoteConfigHelper: FirebaseRemoteConfigHelper,
-        preferencesHelper: PreferencesHelper
+        preferencesHelper: PreferencesHelper,
+        adFrequencyManager: AdFrequencyManager
     ): AppOpenHelper {
-        return AppOpenHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
+        return AppOpenHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper, adFrequencyManager)
     }
 }
