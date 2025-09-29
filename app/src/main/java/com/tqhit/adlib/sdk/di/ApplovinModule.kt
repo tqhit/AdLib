@@ -1,6 +1,7 @@
 package com.tqhit.adlib.sdk.di
 
 import android.content.Context
+import com.tqhit.adlib.sdk.ads.AdFrequencyManager
 import com.tqhit.adlib.sdk.ads.applovin.ApplovinHelper
 import com.tqhit.adlib.sdk.ads.applovin.MaxBannerHelper
 import com.tqhit.adlib.sdk.ads.applovin.MaxInterstitialHelper

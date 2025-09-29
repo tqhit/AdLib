@@ -1,6 +1,7 @@
 package com.tqhit.adlib.sdk.di
 
 import android.content.Context
+import com.tqhit.adlib.sdk.ads.AdFrequencyManager
 import com.tqhit.adlib.sdk.ads.admob.AdmobConsentHelper
 import com.tqhit.adlib.sdk.ads.admob.AdmobHelper
 import com.tqhit.adlib.sdk.ads.admob.AppOpenHelper
