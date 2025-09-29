@@ -7,6 +7,7 @@ import com.applovin.mediation.MaxAdListener
 import com.applovin.mediation.MaxAdRevenueListener
 import com.applovin.mediation.MaxError
 import com.applovin.mediation.ads.MaxInterstitialAd
+import com.tqhit.adlib.sdk.ads.AdFrequencyManager
 import com.tqhit.adlib.sdk.ads.callback.applovin.MaxInterstitialAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
@@ -20,8 +21,10 @@ import javax.inject.Singleton
 class MaxInterstitialHelper @Inject constructor(
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
-    private val preferencesHelper: PreferencesHelper
+    private val preferencesHelper: PreferencesHelper,
+    private val adFrequencyManager: AdFrequencyManager
 ) : MaxAdListener, MaxAdRevenueListener {
+    private val TAG = MaxInterstitialHelper::class.java.simpleName
     // Local variables to store callbacks
     private var currentLoadCallback: MaxInterstitialAdCallback? = null
     private var currentShowCallback: MaxInterstitialAdCallback? = null
@@ -58,6 +61,12 @@ class MaxInterstitialHelper @Inject constructor(
         adCallback: MaxInterstitialAdCallback?
     ) {
         if (!enableAd) {
+            adCallback?.onAdClosed()
+            return
+        }
+        
+        // Check frequency and delay rules
+        if (!adFrequencyManager.canShowInterstitial()) {
             adCallback?.onAdClosed()
             return
         }
@@ -134,6 +143,7 @@ class MaxInterstitialHelper @Inject constructor(
     }
 
     override fun onAdHidden(ad: MaxAd) {
+        adFrequencyManager.recordInterstitialShown()
         analyticsTracker.logEvent("aj_inters_close")
         currentShowCallback?.onAdClosed()
         currentLoadCallback = null
@@ -150,5 +160,3 @@ class MaxInterstitialHelper @Inject constructor(
         analyticsTracker.trackMaxRevenueEvent(ad)
     }
 }
-
-

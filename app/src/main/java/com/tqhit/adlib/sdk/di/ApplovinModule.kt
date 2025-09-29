@@ -36,9 +36,10 @@ object ApplovinModule {
     fun provideMaxInterstitialHelper(
         analyticsTracker: AnalyticsTracker,
         remoteConfigHelper: FirebaseRemoteConfigHelper,
-        preferencesHelper: PreferencesHelper
+        preferencesHelper: PreferencesHelper,
+        adFrequencyManager: AdFrequencyManager
     ): MaxInterstitialHelper {
-        return MaxInterstitialHelper(analyticsTracker, remoteConfigHelper, preferencesHelper)
+        return MaxInterstitialHelper(analyticsTracker, remoteConfigHelper, preferencesHelper, adFrequencyManager)
     }
 
     @Provides
@@ -46,9 +47,10 @@ object ApplovinModule {
     fun provideMaxRewardedHelper(
         analyticsTracker: AnalyticsTracker,
         remoteConfigHelper: FirebaseRemoteConfigHelper,
-        preferencesHelper: PreferencesHelper
+        preferencesHelper: PreferencesHelper,
+        adFrequencyManager: AdFrequencyManager
     ): MaxRewardedHelper {
-        return MaxRewardedHelper(analyticsTracker, remoteConfigHelper, preferencesHelper)
+        return MaxRewardedHelper(analyticsTracker, remoteConfigHelper, preferencesHelper, adFrequencyManager)
     }
 
     @Provides

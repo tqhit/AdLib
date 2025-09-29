@@ -8,6 +8,7 @@ import com.applovin.mediation.MaxReward
 import com.applovin.mediation.MaxRewardedAdListener
 import com.applovin.mediation.MaxError
 import com.applovin.mediation.ads.MaxRewardedAd
+import com.tqhit.adlib.sdk.ads.AdFrequencyManager
 import com.tqhit.adlib.sdk.ads.callback.applovin.MaxRewardAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
@@ -21,8 +22,10 @@ import javax.inject.Singleton
 class MaxRewardedHelper @Inject constructor(
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
-    private val preferencesHelper: PreferencesHelper
+    private val preferencesHelper: PreferencesHelper,
+    private val adFrequencyManager: AdFrequencyManager
 ) : MaxRewardedAdListener, MaxAdRevenueListener {
+    private val TAG = MaxRewardedHelper::class.java.simpleName
     // Local variables to store callbacks
     private var currentLoadCallback: MaxRewardAdCallback? = null
     private var currentShowCallback: MaxRewardAdCallback? = null
@@ -131,6 +134,7 @@ class MaxRewardedHelper @Inject constructor(
     }
 
     override fun onAdHidden(ad: MaxAd) {
+        adFrequencyManager.recordRewardedShown()
         analyticsTracker.logEvent("aj_reward_close")
         currentShowCallback?.onAdClosed()
         currentLoadCallback = null
@@ -150,6 +154,8 @@ class MaxRewardedHelper @Inject constructor(
     override fun onAdRevenuePaid(p0: MaxAd) {
         analyticsTracker.trackMaxRevenueEvent(p0)
     }
+    
+    
 }
 
 

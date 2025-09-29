@@ -10,6 +10,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.tqhit.adlib.sdk.ads.AdFrequencyManager
 import com.tqhit.adlib.sdk.ads.callback.admob.RewardAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
@@ -24,8 +25,10 @@ class RewardHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
-    private val preferencesHelper: PreferencesHelper
+    private val preferencesHelper: PreferencesHelper,
+    private val adFrequencyManager: AdFrequencyManager
 ) {
+    private val TAG = RewardHelper::class.java.simpleName
     private val enableAd by lazy {
         remoteConfigHelper.getBoolean("rv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
@@ -91,6 +94,7 @@ class RewardHelper @Inject constructor(
             fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     super.onAdDismissedFullScreenContent()
+                    adFrequencyManager.recordRewardedShown()
                     adCallback?.onAdClosed()
                     analyticsTracker.logEvent("aj_reward_close")
                 }
@@ -122,6 +126,7 @@ class RewardHelper @Inject constructor(
             adCallback?.onUserEarnedReward(rewardItem)
         })
     }
+    
 
     fun loadReward(
         context: Context,

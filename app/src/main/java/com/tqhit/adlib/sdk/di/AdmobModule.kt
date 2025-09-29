@@ -58,9 +58,10 @@ object AdmobModule {
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
         remoteConfigHelper: FirebaseRemoteConfigHelper,
-        preferencesHelper: PreferencesHelper
+        preferencesHelper: PreferencesHelper,
+        adFrequencyManager: AdFrequencyManager
     ): InterstitialHelper {
-        return InterstitialHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
+        return InterstitialHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper, adFrequencyManager)
     }
 
     @Provides
@@ -80,9 +81,10 @@ object AdmobModule {
         admobConsentHelper: AdmobConsentHelper,
         analyticsTracker: AnalyticsTracker,
         remoteConfigHelper: FirebaseRemoteConfigHelper,
-        preferencesHelper: PreferencesHelper
+        preferencesHelper: PreferencesHelper,
+        adFrequencyManager: AdFrequencyManager
     ): RewardHelper {
-        return RewardHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper)
+        return RewardHelper(admobConsentHelper, analyticsTracker, remoteConfigHelper, preferencesHelper, adFrequencyManager)
     }
 
     @Provides

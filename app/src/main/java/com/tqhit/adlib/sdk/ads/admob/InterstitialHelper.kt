@@ -2,6 +2,7 @@ package com.tqhit.adlib.sdk.ads.admob
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -9,6 +10,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.tqhit.adlib.sdk.ads.AdFrequencyManager
 import com.tqhit.adlib.sdk.ads.callback.admob.InterstitialAdCallback
 import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
@@ -24,8 +26,10 @@ class InterstitialHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
-    private val preferencesHelper: PreferencesHelper
+    private val preferencesHelper: PreferencesHelper,
+    private val adFrequencyManager: AdFrequencyManager
 ) {
+    private val TAG = InterstitialHelper::class.java.simpleName
     private val enableAd by lazy {
         remoteConfigHelper.getBoolean("iv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
@@ -46,6 +50,13 @@ class InterstitialHelper @Inject constructor(
             adCallback?.onAdClosed()
             return
         }
+        
+        // Check frequency and delay rules
+        if (!adFrequencyManager.canShowInterstitial()) {
+            adCallback?.onAdClosed()
+            return
+        }
+        
         if (interstitialAd == null) {
             val loadingAdsDialog = LoadingAdsDialog(activity)
             if (!activity.isFinishing && !activity.isDestroyed)
@@ -91,6 +102,7 @@ class InterstitialHelper @Inject constructor(
             fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     super.onAdDismissedFullScreenContent()
+                    adFrequencyManager.recordInterstitialShown()
                     adCallback?.onAdClosed()
                     analyticsTracker.logEvent("aj_inters_close")
                 }
@@ -120,6 +132,7 @@ class InterstitialHelper @Inject constructor(
         }
         interstitialAd.show(activity)
     }
+    
 
     fun loadInterstitial(
         context: Context,
