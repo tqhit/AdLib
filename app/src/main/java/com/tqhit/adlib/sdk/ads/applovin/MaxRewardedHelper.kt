@@ -101,7 +101,7 @@ class MaxRewardedHelper @Inject constructor(
             
             ad.showAd(activity)
         } else {
-            adCallback?.onAdClosed()
+            adCallback?.onAdFailedToShowFullScreenContent(null)
         }
     }
 
