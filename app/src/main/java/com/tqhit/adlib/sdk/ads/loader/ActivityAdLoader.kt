@@ -247,7 +247,8 @@ class ActivityAdLoader @Inject constructor(
                 if (adConfig.useMax) {
                     applovinHelper.loadNative(activity, adUnitId, object : MaxNativeAdCallback() {
                         override fun onAdLoaded(nativeAdView: MaxNativeAdView, loader: MaxNativeAdLoader) {
-                            handleAdLoaded(adKey, nativeAdView, "Native", adLiveData)
+                            val pack = Pair(nativeAdView, loader)
+                            handleAdLoaded(adKey, pack, "Native", adLiveData)
                         }
 
                         override fun onAdFailedToLoad(error: com.applovin.mediation.MaxError?) {
