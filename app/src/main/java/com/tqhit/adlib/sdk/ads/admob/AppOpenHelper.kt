@@ -14,6 +14,7 @@ import com.tqhit.adlib.sdk.analytics.AnalyticsTracker
 import com.tqhit.adlib.sdk.data.local.PreferencesHelper
 import com.tqhit.adlib.sdk.firebase.FirebaseRemoteConfigHelper
 import com.tqhit.adlib.sdk.utils.Constant
+import com.tqhit.adlib.sdk.ads.AdFrequencyManager
 import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,7 +24,8 @@ class AppOpenHelper @Inject constructor(
     private val admobConsentHelper: AdmobConsentHelper,
     private val analyticsTracker: AnalyticsTracker,
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
-    private val preferencesHelper: PreferencesHelper
+    private val preferencesHelper: PreferencesHelper,
+    private val adFrequencyManager: AdFrequencyManager
 ) {
     private val enableAd by lazy {
         remoteConfigHelper.getBoolean("aoa_enable")
@@ -99,6 +101,12 @@ class AppOpenHelper @Inject constructor(
             return
         }
 
+        // Frequency gating via AdFrequencyManager
+        if (!adFrequencyManager.canShowAppOpen()) {
+            adCallback.onShowAdComplete()
+            return
+        }
+
         if (!isAdAvailable()) {
             adCallback.onShowAdComplete()
             loadAd(activity)
@@ -113,6 +121,7 @@ class AppOpenHelper @Inject constructor(
                 appOpenAd = null
                 isShowingAd = false
                 adLoaded.postValue(false)
+                adFrequencyManager.recordAppOpenShown()
                 adCallback.onShowAdComplete()
                 loadAd(activity)
             }
@@ -123,6 +132,7 @@ class AppOpenHelper @Inject constructor(
                 appOpenAd = null
                 isShowingAd = false
                 adLoaded.postValue(false)
+                adFrequencyManager.recordAppOpenShown()
                 adCallback.onShowAdComplete()
                 loadAd(activity)
             }

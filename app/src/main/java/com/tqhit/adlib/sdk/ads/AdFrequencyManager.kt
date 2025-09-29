@@ -16,10 +16,12 @@ class AdFrequencyManager @Inject constructor(
     // Global tracking for all ad types across all networks (not per adKey)
     private var lastInterstitialShowTime: Long = 0L
     private var lastRewardedShowTime: Long = 0L
+    private var lastAppOpenShowTime: Long = 0L
     
     companion object {
         private const val RC_IV_SHOW_FREQUENCY = "iv_show_frequency"
         private const val RC_IV_DELAY_SHOW_AFTER_RV = "iv_delay_show_after_rv"
+        private const val RC_AOA_SHOW_FREQUENCY = "aoa_show_frequency"
     }
     
     /**
@@ -60,5 +62,24 @@ class AdFrequencyManager @Inject constructor(
      */
     fun recordRewardedShown() {
         lastRewardedShowTime = System.currentTimeMillis()
+    }
+
+    /**
+     * Check if App Open Ad can be shown based on frequency rule
+     * Mirrors IV/RV approach with a simple cooldown in seconds from RC
+     */
+    fun canShowAppOpen(): Boolean {
+        val currentTime = System.currentTimeMillis()
+        val frequencySeconds = remoteConfigHelper.getLong(RC_AOA_SHOW_FREQUENCY)
+        if (frequencySeconds <= 0) return true
+        val timeSinceLast = (currentTime - lastAppOpenShowTime) / 1000
+        return timeSinceLast >= frequencySeconds
+    }
+
+    /**
+     * Record that an App Open Ad was shown
+     */
+    fun recordAppOpenShown() {
+        lastAppOpenShowTime = System.currentTimeMillis()
     }
 }
