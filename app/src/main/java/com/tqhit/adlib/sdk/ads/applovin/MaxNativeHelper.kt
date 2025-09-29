@@ -42,7 +42,7 @@ class MaxNativeHelper @Inject constructor(
             override fun onNativeAdLoaded(nativeAdView: MaxNativeAdView?, ad: com.applovin.mediation.MaxAd) {
                 analyticsTracker.logEvent("aj_native_load_success")
                 if (nativeAdView != null) {
-                    adCallback?.onAdLoaded(nativeAdView, loader)
+                    adCallback?.onAdLoaded(ad, loader)
                 } else {
                     adCallback?.onAdFailedToLoad(null)
                 }

@@ -3,6 +3,7 @@ package com.tqhit.adlib.sdk.ads.loader
 import android.app.Activity
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.applovin.mediation.MaxAd
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -246,8 +247,8 @@ class ActivityAdLoader @Inject constructor(
             adKey.endsWith(NATIVE_SUFFIX) -> {
                 if (adConfig.useMax) {
                     applovinHelper.loadNative(activity, adUnitId, object : MaxNativeAdCallback() {
-                        override fun onAdLoaded(nativeAdView: MaxNativeAdView, loader: MaxNativeAdLoader) {
-                            val pack = Pair(nativeAdView, loader)
+                        override fun onAdLoaded(nativeAd: MaxAd, loader: MaxNativeAdLoader) {
+                            val pack = Pair(nativeAd, loader)
                             handleAdLoaded(adKey, pack, "Native", adLiveData)
                         }
 
