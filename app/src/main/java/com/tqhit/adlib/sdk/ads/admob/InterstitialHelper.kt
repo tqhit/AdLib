@@ -88,6 +88,17 @@ class InterstitialHelper @Inject constructor(
         interstitialAd: InterstitialAd,
         adCallback: InterstitialAdCallback?
     ) {
+        if (!enableAd || !admobConsentHelper.canRequestAds()) {
+            adCallback?.onAdClosed()
+            return
+        }
+        
+        // Check frequency and delay rules
+        if (!adFrequencyManager.canShowInterstitial()) {
+            adCallback?.onAdClosed()
+            return
+        }
+        
         analyticsTracker.logEvent("aj_inters_show")
         interstitialAd.apply {
             onPaidEventListener = OnPaidEventListener { adValue ->

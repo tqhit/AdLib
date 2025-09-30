@@ -105,6 +105,17 @@ class MaxInterstitialHelper @Inject constructor(
         interstitial: MaxInterstitialAd,
         adCallback: MaxInterstitialAdCallback?
     ) {
+        if (!enableAd) {
+            adCallback?.onAdClosed()
+            return
+        }
+
+        // Check frequency and delay rules
+        if (!adFrequencyManager.canShowInterstitial()) {
+            adCallback?.onAdClosed()
+            return
+        }
+
         if (interstitial.isReady) {
             analyticsTracker.logEvent("aj_inters_show")
             

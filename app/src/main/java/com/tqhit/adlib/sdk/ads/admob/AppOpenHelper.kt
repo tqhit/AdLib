@@ -101,15 +101,15 @@ class AppOpenHelper @Inject constructor(
             return
         }
 
-        // Frequency gating via AdFrequencyManager
-        if (!adFrequencyManager.canShowAppOpen()) {
-            adCallback.onShowAdComplete()
-            return
-        }
-
         if (!isAdAvailable()) {
             adCallback.onShowAdComplete()
             loadAd(activity)
+            return
+        }
+
+        // Frequency gating via AdFrequencyManager
+        if (!adFrequencyManager.canShowAppOpen()) {
+            adCallback.onShowAdComplete()
             return
         }
 
