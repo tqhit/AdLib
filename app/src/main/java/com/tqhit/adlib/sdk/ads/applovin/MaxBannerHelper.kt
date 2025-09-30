@@ -22,7 +22,7 @@ class MaxBannerHelper @Inject constructor(
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
     private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("bn_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -33,7 +33,7 @@ class MaxBannerHelper @Inject constructor(
         parent: ViewGroup?,
         adCallback: MaxBannerAdCallback?
     ): MaxAdView? {
-        if (!enableAd) {
+        if (!isAdEnabled()) {
             adCallback?.onAdFailedToLoad(null)
             return null
         }

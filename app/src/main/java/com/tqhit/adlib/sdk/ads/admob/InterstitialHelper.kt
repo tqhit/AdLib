@@ -30,7 +30,7 @@ class InterstitialHelper @Inject constructor(
     private val adFrequencyManager: AdFrequencyManager
 ) {
     private val TAG = InterstitialHelper::class.java.simpleName
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("iv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -46,7 +46,7 @@ class InterstitialHelper @Inject constructor(
         timeoutMilliSecond: Int?,
         adCallback: InterstitialAdCallback?
     ) {
-        if (!enableAd || !admobConsentHelper.canRequestAds()) {
+        if (!isAdEnabled() || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdClosed()
             return
         }
@@ -88,7 +88,7 @@ class InterstitialHelper @Inject constructor(
         interstitialAd: InterstitialAd,
         adCallback: InterstitialAdCallback?
     ) {
-        if (!enableAd || !admobConsentHelper.canRequestAds()) {
+        if (!isAdEnabled() || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdClosed()
             return
         }
@@ -151,7 +151,7 @@ class InterstitialHelper @Inject constructor(
         timeoutMilliSecond: Int?,
         adCallback: InterstitialAdCallback?
     ) {
-        if (!enableAd || !admobConsentHelper.canRequestAds()) {
+        if (!isAdEnabled() || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }

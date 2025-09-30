@@ -30,7 +30,7 @@ class MaxRewardedHelper @Inject constructor(
     private var currentLoadCallback: MaxRewardAdCallback? = null
     private var currentShowCallback: MaxRewardAdCallback? = null
     
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("rv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -40,7 +40,7 @@ class MaxRewardedHelper @Inject constructor(
         adUnitId: String,
         adCallback: MaxRewardAdCallback?
     ) {
-        if (!enableAd) {
+        if (!isAdEnabled()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }
@@ -62,7 +62,7 @@ class MaxRewardedHelper @Inject constructor(
         rewardedAd: MaxRewardedAd?,
         adCallback: MaxRewardAdCallback?
     ) {
-        if (!enableAd) {
+        if (!isAdEnabled()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }

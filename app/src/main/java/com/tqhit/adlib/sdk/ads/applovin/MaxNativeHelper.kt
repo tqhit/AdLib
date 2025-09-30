@@ -21,7 +21,7 @@ class MaxNativeHelper @Inject constructor(
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
     private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("nt_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -31,7 +31,7 @@ class MaxNativeHelper @Inject constructor(
         adUnitId: String,
         adCallback: MaxNativeAdCallback?
     ) {
-        if (!enableAd) {
+        if (!isAdEnabled()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }

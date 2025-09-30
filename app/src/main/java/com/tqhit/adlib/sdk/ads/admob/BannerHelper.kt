@@ -28,7 +28,7 @@ class BannerHelper @Inject constructor(
     private val remoteConfigHelper: FirebaseRemoteConfigHelper,
     private val preferencesHelper: PreferencesHelper
 ) {
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("bn_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -101,7 +101,7 @@ class BannerHelper @Inject constructor(
         timeoutMilliSecond: Int?,
         adCallback: BannerAdCallback?
     ): AdView? {
-        if (!enableAd || !admobConsentHelper.canRequestAds())
+        if (!isAdEnabled() || !admobConsentHelper.canRequestAds())
         {
             adCallback?.onAdFailedToLoad();
             return null
@@ -171,7 +171,7 @@ class BannerHelper @Inject constructor(
         timeoutMilliSecond: Int?,
         adCallback: BannerAdCallback?
     ): AdView? {
-        if (!enableAd || !admobConsentHelper.canRequestAds())
+        if (!isAdEnabled() || !admobConsentHelper.canRequestAds())
         {
             adCallback?.onAdFailedToLoad();
             return null

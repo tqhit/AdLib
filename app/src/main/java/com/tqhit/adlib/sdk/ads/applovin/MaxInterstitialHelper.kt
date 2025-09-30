@@ -28,7 +28,7 @@ class MaxInterstitialHelper @Inject constructor(
     // Local variables to store callbacks
     private var currentLoadCallback: MaxInterstitialAdCallback? = null
     private var currentShowCallback: MaxInterstitialAdCallback? = null
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("iv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -38,7 +38,7 @@ class MaxInterstitialHelper @Inject constructor(
         adUnitId: String,
         adCallback: MaxInterstitialAdCallback?
     ) {
-        if (!enableAd) {
+        if (!isAdEnabled()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }
@@ -60,7 +60,7 @@ class MaxInterstitialHelper @Inject constructor(
         interstitial: MaxInterstitialAd?,
         adCallback: MaxInterstitialAdCallback?
     ) {
-        if (!enableAd) {
+        if (!isAdEnabled()) {
             adCallback?.onAdClosed()
             return
         }
@@ -105,7 +105,7 @@ class MaxInterstitialHelper @Inject constructor(
         interstitial: MaxInterstitialAd,
         adCallback: MaxInterstitialAdCallback?
     ) {
-        if (!enableAd) {
+        if (!isAdEnabled()) {
             adCallback?.onAdClosed()
             return
         }

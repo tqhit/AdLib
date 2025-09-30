@@ -27,7 +27,7 @@ class AppOpenHelper @Inject constructor(
     private val preferencesHelper: PreferencesHelper,
     private val adFrequencyManager: AdFrequencyManager
 ) {
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("aoa_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -48,7 +48,7 @@ class AppOpenHelper @Inject constructor(
     }
 
     fun loadAd(context: Context) {
-        if (!enableAd) return
+        if (!isAdEnabled()) return
         if (!admobConsentHelper.canRequestAds()) return
         if (isLoadingAd || isAdAvailable()) return
         isLoadingAd = true
@@ -96,7 +96,7 @@ class AppOpenHelper @Inject constructor(
 
     /** Shows the ad if one isn't already showing.  */
     fun showAdIfAvailable(activity: Activity, adCallback: OnShowAdCompleteListener) {
-        if (!enableAd || isShowingAd) {
+        if (!isAdEnabled() || isShowingAd) {
             adCallback.onShowAdComplete()
             return
         }

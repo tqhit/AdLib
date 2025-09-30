@@ -29,7 +29,7 @@ class RewardHelper @Inject constructor(
     private val adFrequencyManager: AdFrequencyManager
 ) {
     private val TAG = RewardHelper::class.java.simpleName
-    private val enableAd by lazy {
+    private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("rv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
     }
@@ -45,7 +45,7 @@ class RewardHelper @Inject constructor(
         timeOutMilliSecond: Int?,
         adCallback: RewardAdCallback?
     ) {
-        if (!enableAd || !admobConsentHelper.canRequestAds()) {
+        if (!isAdEnabled() || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdFailedToLoad()
             return
         }
@@ -134,7 +134,7 @@ class RewardHelper @Inject constructor(
         timeOutMilliSecond: Int?,
         adCallback: RewardAdCallback?
     ) {
-        if (!enableAd || !admobConsentHelper.canRequestAds()) {
+        if (!isAdEnabled() || !admobConsentHelper.canRequestAds()) {
             adCallback?.onAdFailedToLoad(null)
             return
         }
