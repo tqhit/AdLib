@@ -35,7 +35,7 @@ class NativeHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("nt_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
+    
 
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()

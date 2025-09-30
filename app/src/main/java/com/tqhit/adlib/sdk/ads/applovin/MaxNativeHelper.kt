@@ -24,7 +24,6 @@ class MaxNativeHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("nt_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
 
     fun loadNative(
         context: Context,

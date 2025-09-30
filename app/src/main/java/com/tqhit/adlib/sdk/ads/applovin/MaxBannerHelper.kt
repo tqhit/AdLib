@@ -25,7 +25,6 @@ class MaxBannerHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("bn_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
 
     fun loadBanner(
         activity: Activity,

@@ -31,7 +31,7 @@ class BannerHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("bn_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
+    
 
     private fun getCollapsibleAdRequest(timeout: Int = 60000): AdRequest {
         val builder = AdRequest.Builder().setHttpTimeoutMillis(timeout)

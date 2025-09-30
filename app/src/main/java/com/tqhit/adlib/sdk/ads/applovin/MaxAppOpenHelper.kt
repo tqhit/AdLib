@@ -26,7 +26,7 @@ class MaxAppOpenHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("aoa_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
+    
     private var loadTime: Long = 0
     private var adUnitId = ""
     private var appOpenAd: MaxAppOpenAd? = null

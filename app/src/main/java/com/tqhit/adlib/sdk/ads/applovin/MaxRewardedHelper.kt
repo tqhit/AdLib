@@ -33,7 +33,6 @@ class MaxRewardedHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("rv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
 
     fun loadReward(
         context: Context,

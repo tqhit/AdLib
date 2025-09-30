@@ -33,7 +33,7 @@ class InterstitialHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("iv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
+    
 
     private fun getAdRequest(timeout: Int = 60000): AdRequest {
         return AdRequest.Builder().setHttpTimeoutMillis(timeout).build()

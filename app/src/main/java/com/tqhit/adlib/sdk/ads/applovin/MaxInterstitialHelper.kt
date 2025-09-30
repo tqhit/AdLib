@@ -31,7 +31,6 @@ class MaxInterstitialHelper @Inject constructor(
     private fun isAdEnabled() =
         remoteConfigHelper.getBoolean("iv_enable")
                 && !preferencesHelper.getBoolean(Constant.IS_PREMIUM, false)
-    }
 
     fun loadInterstitial(
         context: Context,
