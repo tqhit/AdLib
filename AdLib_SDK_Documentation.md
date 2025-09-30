@@ -149,7 +149,7 @@ class AdmobHelper @Inject constructor(...) {
 @Singleton
 class ApplovinHelper @Inject constructor(...) {
     // Initialization
-    fun initApplovin(context: Context, sdkKey: String?, testDeviceIds: List<String>?, onComplete: (() -> Unit)?)
+    fun initialize(context: Context, sdkKey: String?, testDeviceIds: List<String>?, onComplete: (() -> Unit)?)
     
     // Interstitial
     fun loadInterstitial(context: Context, adUnitId: String, listener: MaxInterstitialHelper.Listener)
@@ -190,7 +190,7 @@ class MyApplication : AdLibHiltApplication() {
         }, testDeviceIds = listOf("TEST_DEVICE_ID"))
         
         // Initialize AppLovin MAX
-        applovinHelper.initApplovin(
+        applovinHelper.initialize(
             context = this,
             sdkKey = "YOUR_SDK_KEY",
             testDeviceIds = listOf("TEST_DEVICE_ID"),
@@ -353,21 +353,21 @@ analyticsTracker.trackMaxRevenueEvent(maxAd)
 
 ```kotlin
 // AdMob
-implementation 'com.google.android.gms:play-services-ads:22.6.0'
+implementation 'com.google.android.gms:play-services-ads:23.6.0'
 
 // AppLovin MAX
-implementation 'com.applovin:applovin-sdk:12.4.2'
+implementation 'com.applovin:applovin-sdk:13.4.0'
 
 // Hilt
-implementation 'com.google.dagger:hilt-android:2.48'
-kapt 'com.google.dagger:hilt-compiler:2.48'
+implementation 'com.google.dagger:hilt-android:2.55'
+kapt 'com.google.dagger:hilt-compiler:2.55'
 
 // Firebase
-implementation 'com.google.firebase:firebase-analytics:21.5.0'
-implementation 'com.google.firebase:firebase-config:21.6.0'
+implementation 'com.google.firebase:firebase-analytics:22.2.0'
+implementation 'com.google.firebase:firebase-config:22.1.0'
 
 // Lottie (for loading dialogs)
-implementation 'com.airbnb.android:lottie:6.1.0'
+implementation 'com.airbnb.android:lottie:6.6.2'
 ```
 
 ### Hilt Modules
@@ -530,3 +530,4 @@ APP_AOA = {"useMax": true, "customId": "max_aoa_xxx"}
 ```
 
 This documentation provides comprehensive context for implementing AdLib SDK in any Android project.
+

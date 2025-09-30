@@ -74,6 +74,7 @@ class MaxAppOpenHelper @Inject constructor(
                 adFrequencyManager.recordAppOpenShown()
                 currentCallback?.onShowAdComplete()
                 currentCallback = null
+                loadAd(context)
             }
             override fun onAdDisplayed(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_app_open_show_success")
@@ -86,6 +87,7 @@ class MaxAppOpenHelper @Inject constructor(
                 adFrequencyManager.recordAppOpenShown()
                 currentCallback?.onShowAdComplete()
                 currentCallback = null
+                loadAd(context)
             }
             override fun onAdClicked(ad: MaxAd) {
                 analyticsTracker.logEvent("aj_app_open_click")
