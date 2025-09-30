@@ -34,7 +34,7 @@ class ApplovinHelper @Inject constructor(
         context: Context,
         sdkKey: String? = null,
         testDeviceIds: List<String>? = null,
-        onComplete: (() -> Unit)? = null
+        onComplete: ((AppLovinSdkConfiguration) -> Unit)? = null
     ) {
         val sdk = AppLovinSdk.getInstance(context)
         val initConfigBuilder = AppLovinSdkInitializationConfiguration.builder(sdkKey ?: sdk.sdkKey)
@@ -43,8 +43,8 @@ class ApplovinHelper @Inject constructor(
             initConfigBuilder.setTestDeviceAdvertisingIds(testDeviceIds)
         }
         val initConfig = initConfigBuilder.build()
-        sdk.initialize(initConfig) { _: AppLovinSdkConfiguration ->
-            onComplete?.invoke()
+        sdk.initialize(initConfig) { sdkConfig: AppLovinSdkConfiguration ->
+            onComplete?.invoke(sdkConfig)
         }
     }
 
